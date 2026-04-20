@@ -23,7 +23,7 @@
   :root {
     --bg: #0f0f0f; --bg2: #161616; --bg3: #1e1e1e; --border: #2a2a2a;
     --orange: #ff6b1a; --orange-dim: #ff6b1a22; --orange-glow: #ff6b1a44;
-    --text: #f0f0f0; --text-dim: #aaaaaa; --text-muted: #666666;
+    --text: #f0f0f0; --text-dim: #cccccc; --text-muted: #999999;
     --green: #4ade80; --blue: #60a5fa; --yellow: #facc15;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -104,11 +104,11 @@
   .macro-name.carb { color: var(--yellow); } .macro-name.protein { color: var(--blue); } .macro-name.fat { color: #f87171; }
   .macro-amount { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; margin-bottom: 2px; }
   .macro-amount.carb { color: var(--yellow); } .macro-amount.protein { color: var(--blue); } .macro-amount.fat { color: #f87171; }
-  .macro-unit { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+  .macro-unit { font-size: 11px; color: #bbbbbb; margin-bottom: 8px; }
   .macro-bar-bg { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
   .macro-bar { height: 100%; border-radius: 2px; transition: width 1s ease; }
   .macro-bar.carb { background: var(--yellow); } .macro-bar.protein { background: var(--blue); } .macro-bar.fat { background: #f87171; }
-  .macro-equiv { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .macro-equiv { font-size: 11px; color: #bbbbbb; line-height: 1.4; }
   .sleep-note { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 0 10px 10px 0; padding: 14px 16px; margin-top: 12px; font-size: 12px; color: var(--text-dim); line-height: 1.7; }
   .ad-inline { height: 100px; background: var(--bg3); border: 1px dashed var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; letter-spacing: 1px; margin-bottom: 16px; }
   .food-section { margin-top: 4px; }
@@ -361,11 +361,11 @@
 
         <!-- 칼로리 참고값 (하단) -->
         <div class="calorie-display" style="margin-top:16px;">
-          <div class="calorie-label">칼로리 합산 <span style="font-size:10px;color:var(--text-muted);font-weight:400;letter-spacing:0;">(참고값)</span></div>
+          <div class="calorie-label">칼로리 합산 <span style="font-size:10px;color:#999999;font-weight:400;letter-spacing:0;">(참고값)</span></div>
           <div class="calorie-number" id="resultCalorie" style="font-size:48px;">-</div>
           <div class="calorie-unit">kcal / day</div>
           <div class="calorie-desc" id="resultDesc"></div>
-          <div style="margin-top:10px;font-size:11px;color:var(--text-muted);line-height:1.7;">같은 탄수화물 200g이라도 현미밥과 설탕은 혈당 반응이 완전히 다릅니다.<br>칼로리보다 <strong style="color:var(--text-dim);">영양소 구성과 식품의 질</strong>이 더 중요합니다.</div>
+          <div style="margin-top:10px;font-size:11px;color:#aaaaaa;line-height:1.7;">같은 탄수화물 200g이라도 현미밥과 설탕은 혈당 반응이 완전히 다릅니다.<br>칼로리보다 <strong style="color:var(--text);">영양소 구성과 식품의 질</strong>이 더 중요합니다.</div>
         </div>
 
         <div class="sleep-note">
