@@ -23,7 +23,7 @@
   :root {
     --bg: #0f0f0f; --bg2: #161616; --bg3: #1e1e1e; --border: #2a2a2a;
     --orange: #ff6b1a; --orange-dim: #ff6b1a22; --orange-glow: #ff6b1a44;
-    --text: #f0f0f0; --text-dim: #888; --text-muted: #555;
+    --text: #f0f0f0; --text-dim: #aaaaaa; --text-muted: #666666;
     --green: #4ade80; --blue: #60a5fa; --yellow: #facc15;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -645,11 +645,25 @@
 
     const tdee = bmr * getActivityMultiplier();
 
-    // 탄단지 전부 체중 기반 고정
+    // 탄단지: 체중 기반 기준값 + 운동 강도에 따른 보정
     const isNoEx = selectedFreq === 0;
-    const protCoeff = { diet: isNoEx ? 1.1 : 1.7, lean: isNoEx ? 1.1 : 1.9, bulk: isNoEx ? 1.1 : 1.5 };
-    const carbCoeff = { diet: isNoEx ? 2.0 : 2.5, lean: isNoEx ? 2.0 : 3.0, bulk: isNoEx ? 2.0 : 4.0 };
-    const fatCoeff  = { diet: 0.8, lean: 0.8, bulk: 1.0 };
+
+    // 활동 계수 (운동 빈도/강도 반영)
+    const actMult = getActivityMultiplier();
+    // 1.2 = 운동 안 함 기준, 그 이상은 운동량에 비례해서 탄수화물/단백질 증가
+    const actBonus = Math.max(0, actMult - 1.2); // 0.0 ~ 1.0 범위
+
+    const protCoeff = {
+      diet: isNoEx ? 1.1 : 1.7 + actBonus * 0.3,
+      lean: isNoEx ? 1.1 : 1.9 + actBonus * 0.2,
+      bulk: isNoEx ? 1.1 : 1.5 + actBonus * 0.3
+    };
+    const carbCoeff = {
+      diet: isNoEx ? 2.0 : 2.5 + actBonus * 0.8,
+      lean: isNoEx ? 2.0 : 3.0 + actBonus * 0.6,
+      bulk: isNoEx ? 2.0 : 4.0 + actBonus * 1.0
+    };
+    const fatCoeff = { diet: 0.8, lean: 0.8, bulk: 1.0 };
 
     const proteinG = Math.round(weight * protCoeff[selectedGoal]);
     const carbG    = Math.round(weight * carbCoeff[selectedGoal]);
@@ -657,8 +671,6 @@
 
     // 칼로리는 합산 참고값
     const totalCal = proteinG * 4 + carbG * 4 + fatG * 9;
-    const calAdj = { diet: -400, lean: -200, bulk: 300 };
-    const tdeeCalorie = Math.round(tdee + (isNoEx ? -300 : calAdj[selectedGoal]));
 
     document.getElementById('resultCalorie').textContent = totalCal.toLocaleString();
     document.getElementById('resultCarb').textContent = carbG;
@@ -689,18 +701,18 @@
   const foodData = {
     diet: {
       carb: [{ emoji:'🍠', name:'고구마', tip:'저GI · 혈당 완만하게 상승, 포만감 ↑', buy:true }, { emoji:'🌾', name:'현미밥', tip:'저GI · 식이섬유 풍부, 백미 대체', buy:false }, { emoji:'🌿', name:'오트밀', tip:'저GI · 베타글루칸으로 포만감 지속', buy:true }, { emoji:'🥦', name:'채소류', tip:'최저GI · 칼로리 낮고 부피 큼', buy:false }],
-      protein: [{ emoji:'🍗', name:'닭가슴살', tip:'100g당 단백질 23g, 지방 최소', buy:true }, { emoji:'🥚', name:'계란흰자', tip:'순수 단백질, 흡수율 최고', buy:false }, { emoji:'🫘', name:'두부', tip:'식물성 단백질, 이소플라본 함유', buy:true }, { emoji:'🐟', name:'흰살생선', tip:'저지방 고단백, 소화 흡수 빠름', buy:false }],
-      fat: [{ emoji:'🥑', name:'아보카도', tip:'불포화 지방산, 소량 섭취 권장', buy:false }, { emoji:'🫒', name:'올리브오일', tip:'올레산 함유, 요리에 소량', buy:true }, { emoji:'🥜', name:'아몬드', tip:'비타민E 풍부, 한 줌(25g) 이내', buy:true }]
+      protein: [{ emoji:'🍗', name:'닭가슴살', tip:'100g당 단백질 23g, 지방 최소', buy:true }, { emoji:'🥚', name:'계란흰자', tip:'순수 단백질, 흡수율 최고', buy:false }, { emoji:'⬜', name:'두부', tip:'식물성 단백질, 이소플라본 함유', buy:true }, { emoji:'🐟', name:'흰살생선', tip:'저지방 고단백, 소화 흡수 빠름', buy:false }],
+      fat: [{ emoji:'🥑', name:'아보카도', tip:'불포화 지방산, 소량 섭취 권장', buy:false }, { emoji:'🍶', name:'올리브오일', tip:'올레산 함유, 요리에 소량', buy:true }, { emoji:'🥜', name:'아몬드', tip:'비타민E 풍부, 한 줌(25g) 이내', buy:true }]
     },
     lean: {
       carb: [{ emoji:'🍠', name:'고구마', tip:'저GI · 린매스업 필수 탄수화물', buy:true }, { emoji:'🌾', name:'현미밥', tip:'저GI · 운동 전후 섭취 권장', buy:false }, { emoji:'🌿', name:'귀리', tip:'저GI · 지속적인 에너지 공급', buy:true }, { emoji:'🍌', name:'바나나', tip:'중GI · 운동 전 빠른 에너지 보충', buy:false }],
       protein: [{ emoji:'🍗', name:'닭가슴살', tip:'린매스업의 핵심 단백질 공급원', buy:true }, { emoji:'🥩', name:'소고기 안심', tip:'크레아틴 + 단백질 동시 보충', buy:false }, { emoji:'🥚', name:'전란', tip:'완전 단백질, 필수 아미노산 풍부', buy:false }, { emoji:'🐟', name:'연어', tip:'오메가3 + 단백질, 염증 억제', buy:true }],
-      fat: [{ emoji:'🥚', name:'달걀노른자', tip:'지용성 비타민 흡수 도움', buy:false }, { emoji:'🫒', name:'올리브오일', tip:'항산화 작용, 근육 회복 도움', buy:true }, { emoji:'🥜', name:'땅콩버터', tip:'칼로리 밀도 높음, 소량 활용', buy:true }]
+      fat: [{ emoji:'🥚', name:'달걀노른자', tip:'지용성 비타민 흡수 도움', buy:false }, { emoji:'🍶', name:'올리브오일', tip:'항산화 작용, 근육 회복 도움', buy:true }, { emoji:'🥜', name:'땅콩버터', tip:'칼로리 밀도 높음, 소량 활용', buy:true }]
     },
     bulk: {
       carb: [{ emoji:'🍚', name:'흰쌀밥', tip:'고GI · 운동 후 빠른 글리코겐 보충', buy:false }, { emoji:'🍌', name:'바나나', tip:'중GI · 소화 빠른 고칼로리', buy:false }, { emoji:'🍞', name:'통밀빵', tip:'중GI · 식이섬유 있는 복합 탄수화물', buy:true }, { emoji:'🌿', name:'귀리', tip:'저GI · 아침 식사로 최적', buy:true }],
       protein: [{ emoji:'🥩', name:'소고기', tip:'크레아틴으로 근력 향상', buy:false }, { emoji:'🍗', name:'닭다리살', tip:'지방 포함 고칼로리 단백질', buy:false }, { emoji:'🐟', name:'연어', tip:'오메가3로 운동 후 염증 억제', buy:true }, { emoji:'🥚', name:'전란', tip:'가장 완전한 단백질 식품', buy:false }],
-      fat: [{ emoji:'🥜', name:'견과류', tip:'칼로리 밀도 높아 보충에 효율적', buy:true }, { emoji:'🥑', name:'아보카도', tip:'건강한 불포화 지방, 칼로리 추가', buy:false }, { emoji:'🫒', name:'올리브오일', tip:'요리에 활용, 칼로리 밀도 높음', buy:true }]
+      fat: [{ emoji:'🥜', name:'견과류', tip:'칼로리 밀도 높아 보충에 효율적', buy:true }, { emoji:'🥑', name:'아보카도', tip:'건강한 불포화 지방, 칼로리 추가', buy:false }, { emoji:'🍶', name:'올리브오일', tip:'요리에 활용, 칼로리 밀도 높음', buy:true }]
     }
   };
 
