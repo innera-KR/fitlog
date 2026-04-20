@@ -193,6 +193,45 @@
   .timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--orange); margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 8px var(--orange-glow); }
   .timeline-item p { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin: 0; }
   .timeline-item strong { color: var(--text); }
+
+  /* 식단 예시 */
+  .meal-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
+  .meal-toggle-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: #bbbbbb; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 700; padding: 10px 20px; cursor: pointer; transition: all 0.2s; }
+  .meal-toggle-btn.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); }
+  .meal-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .meal-tab { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: #bbbbbb; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 8px 18px; cursor: pointer; transition: all 0.2s; }
+  .meal-tab.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); font-weight: 700; }
+  .meal-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+  .meal-table th { background: var(--bg3); color: #bbbbbb; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .meal-table td { padding: 10px 12px; border-bottom: 1px solid #1f1f1f; font-size: 13px; color: #cccccc; }
+  .meal-table tr:last-child td { border-bottom: none; }
+  .meal-table .food-name-cell { font-weight: 700; color: var(--text); }
+  .meal-table .amount-cell { color: #999; }
+  .meal-subtotal { background: var(--bg3); border-radius: 10px; padding: 12px 16px; display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 4px; }
+  .meal-subtotal-item { font-size: 12px; }
+  .meal-subtotal-label { color: #999; margin-right: 4px; }
+  .meal-subtotal-val { font-weight: 700; }
+  .meal-subtotal-val.carb { color: var(--yellow); }
+  .meal-subtotal-val.protein { color: var(--blue); }
+  .meal-subtotal-val.fat { color: #f87171; }
+  .achievement-wrap { margin-top: 20px; background: var(--bg3); border-radius: 12px; padding: 18px; }
+  .achievement-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: #bbbbbb; text-transform: uppercase; margin-bottom: 14px; }
+  .achievement-row { margin-bottom: 12px; }
+  .achievement-row:last-child { margin-bottom: 0; }
+  .achievement-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+  .achievement-name { color: #cccccc; }
+  .achievement-nums { color: #999; }
+  .achievement-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .achievement-bar { height: 100%; border-radius: 3px; transition: width 1s ease; }
+  .achievement-bar.carb { background: var(--yellow); }
+  .achievement-bar.protein { background: var(--blue); }
+  .achievement-bar.fat { background: #f87171; }
+  .supplement-note { margin-top: 16px; background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--orange); border-radius: 0 10px 10px 0; padding: 16px 18px; }
+  .supplement-note-title { font-size: 12px; font-weight: 700; color: var(--orange); margin-bottom: 10px; }
+  .supplement-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #222; }
+  .supplement-item:last-child { border-bottom: none; }
+  .supplement-left { font-size: 13px; color: #cccccc; }
+  .supplement-right { font-size: 12px; color: #999; text-align: right; }
 </style>
 </head>
 <body>
@@ -376,6 +415,49 @@
         <div class="card-title">RECOMMEND — 추천 식품</div>
         <div class="food-section" id="foodSection"></div>
       </div>
+
+      <!-- 식단 예시 섹션 -->
+      <div class="card" id="mealPlanSection">
+        <div class="card-title">MEAL PLAN — 식단 예시</div>
+
+        <!-- 일반/간헐적 단식 토글 -->
+        <div class="meal-toggle">
+          <button class="meal-toggle-btn active" id="btnNormal" onclick="switchMealType('normal')">일반 식단 (3끼)</button>
+          <button class="meal-toggle-btn" id="btnIF" onclick="switchMealType('if')">간헐적 단식 (16:8)</button>
+        </div>
+
+        <!-- 안내 문구 -->
+        <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:20px;font-size:12px;color:#cccccc;line-height:1.8;">
+          아래 식단은 <strong style="color:var(--text);">구성 예시</strong>입니다. 다양한 식품을 보여주기 위해 여러 가지를 조합했지만, 실제로는 더 단순하게 구성해도 충분합니다.<br>
+          예를 들어 다이어트 초기에는 <strong style="color:var(--text);">현미밥 + 닭가슴살</strong> 위주로 단순하게 반복하는 것도 효과적인 방법입니다.<br>
+          <span style="color:#999;">중요한 건 복잡한 구성이 아니라 꾸준히 지킬 수 있는 식단입니다.</span>
+        </div>
+
+        <!-- 지방 섭취 안내 -->
+        <div style="background:var(--bg3);border:1px solid #f8717133;border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:12px;color:#cccccc;line-height:1.8;">
+          🥩 <strong style="color:#f87171;">지방 섭취 안내</strong><br>
+          지방은 별도로 챙기기보다 단백질 식품(소고기, 연어, 달걀 등)에서 자연스럽게 함께 섭취하는 것을 권장합니다.<br>
+          부족할 경우 <strong style="color:var(--text);">견과류나 올리브오일</strong>로 소량 보충하세요.
+        </div>
+
+        <!-- 끼니 탭 -->
+        <div class="meal-tabs" id="mealTabs"></div>
+
+        <!-- 식단 내용 -->
+        <div id="mealContent"></div>
+
+        <!-- 하루 달성률 -->
+        <div class="achievement-wrap" id="achievementWrap"></div>
+
+        <!-- 보충제 안내 -->
+        <div class="supplement-note" id="supplementNote"></div>
+
+        <p style="font-size:11px;color:#999;margin-top:16px;line-height:1.7;">
+          ※ 식품 영양성분은 <a href="https://www.foodsafetykorea.go.kr/fcdb/" target="_blank" style="color:var(--orange);">식품의약품안전처 식품영양성분 데이터베이스</a> 기준입니다.<br>
+          부위, 조리법, 제품에 따라 실제 수치가 다를 수 있으니 참고용으로 활용하세요.
+        </p>
+      </div>
+
       <div class="ad-inline">[ 광고 영역 — Google AdSense ]</div>
     </div>
   </div>
@@ -569,6 +651,281 @@
 <script>
   let selectedGoal = null, selectedJob = 'sedentary', selectedFreq = 3, selectedExp = 'experienced';
 
+  // ── 식품 영양성분 DB (식품의약품안전처 기준, 100g당) ──
+  const foodDB = {
+    '현미밥':     { carb:34, protein:3,  fat:0.3, cal:156 },
+    '흰쌀밥':     { carb:36, protein:2,  fat:0.3, cal:156 },
+    '고구마':     { carb:30, protein:1,  fat:0.1, cal:128 },
+    '오트밀':     { carb:67, protein:13, fat:7,   cal:389 },
+    '귀리밥':     { carb:33, protein:4,  fat:1,   cal:160 },
+    '바나나':     { carb:23, protein:1,  fat:0.2, cal:89  },
+    '통밀빵':     { carb:42, protein:9,  fat:3,   cal:230 },
+    '통밀파스타': { carb:37, protein:7,  fat:1,   cal:185 },
+    '단호박':     { carb:17, protein:1,  fat:0.1, cal:73  },
+    '렌틸콩':     { carb:20, protein:9,  fat:0.4, cal:116 },
+    '닭가슴살':   { carb:0,  protein:23, fat:1.2, cal:109 },
+    '닭다리살':   { carb:0,  protein:18, fat:8,   cal:155 },
+    '소고기':     { carb:0,  protein:21, fat:10,  cal:180 },
+    '돼지고기':   { carb:0,  protein:19, fat:12,  cal:190 },
+    '연어':       { carb:0,  protein:20, fat:13,  cal:200 },
+    '참치캔':     { carb:0,  protein:25, fat:1,   cal:110 },
+    '계란전란':   { carb:1,  protein:13, fat:10,  cal:143, perUnit:60 },
+    '계란흰자':   { carb:0,  protein:11, fat:0.2, cal:52,  perUnit:30 },
+    '두부':       { carb:2,  protein:10, fat:5,   cal:90  },
+    '그릭요거트': { carb:4,  protein:10, fat:0.4, cal:59  },
+    '코티지치즈': { carb:3,  protein:11, fat:4,   cal:90  },
+    '흰살생선':   { carb:0,  protein:18, fat:1,   cal:90  },
+    '올리브오일': { carb:0,  protein:0,  fat:100, cal:884 },
+    '아보카도':   { carb:9,  protein:2,  fat:15,  cal:160 },
+    '아몬드':     { carb:22, protein:21, fat:50,  cal:580 },
+    '호두':       { carb:14, protein:15, fat:65,  cal:650 },
+    '땅콩버터':   { carb:20, protein:25, fat:50,  cal:590 },
+    '달걀노른자': { carb:1,  protein:16, fat:27,  cal:320 },
+    '들기름':     { carb:0,  protein:0,  fat:100, cal:884 },
+    '치아씨드':   { carb:42, protein:17, fat:31,  cal:490 },
+  };
+
+  const mealTemplates = {
+    normal: {
+      diet: [
+        { name:'아침', foods:[
+          { food:'오트밀', amount:80 },
+          { food:'계란전란', amount:2, isUnit:true },
+          { food:'바나나', amount:100 },
+        ]},
+        { name:'점심', foods:[
+          { food:'현미밥', amount:200 },
+          { food:'닭가슴살', amount:150 },
+          { food:'두부', amount:100 },
+          { food:'올리브오일', amount:10 },
+        ]},
+        { name:'저녁', foods:[
+          { food:'고구마', amount:150 },
+          { food:'흰살생선', amount:150 },
+          { food:'그릭요거트', amount:100 },
+          { food:'아몬드', amount:20 },
+        ]},
+      ],
+      lean: [
+        { name:'아침', foods:[
+          { food:'귀리밥', amount:150 },
+          { food:'계란전란', amount:2, isUnit:true },
+          { food:'그릭요거트', amount:100 },
+        ]},
+        { name:'점심', foods:[
+          { food:'현미밥', amount:200 },
+          { food:'닭가슴살', amount:180 },
+          { food:'두부', amount:100 },
+          { food:'올리브오일', amount:10 },
+        ]},
+        { name:'저녁', foods:[
+          { food:'고구마', amount:180 },
+          { food:'연어', amount:150 },
+          { food:'렌틸콩', amount:100 },
+          { food:'아몬드', amount:25 },
+        ]},
+      ],
+      bulk: [
+        { name:'아침', foods:[
+          { food:'오트밀', amount:100 },
+          { food:'바나나', amount:150 },
+          { food:'계란전란', amount:3, isUnit:true },
+          { food:'땅콩버터', amount:20 },
+        ]},
+        { name:'점심', foods:[
+          { food:'흰쌀밥', amount:300 },
+          { food:'소고기', amount:200 },
+          { food:'렌틸콩', amount:100 },
+        ]},
+        { name:'저녁', foods:[
+          { food:'현미밥', amount:250 },
+          { food:'연어', amount:150 },
+          { food:'닭다리살', amount:150 },
+          { food:'호두', amount:25 },
+        ]},
+      ],
+    },
+    if: {
+      diet: [
+        { name:'점심 (첫 식사)', foods:[
+          { food:'현미밥', amount:250 },
+          { food:'닭가슴살', amount:200 },
+          { food:'계란전란', amount:2, isUnit:true },
+          { food:'올리브오일', amount:10 },
+        ]},
+        { name:'저녁 (두 번째 식사)', foods:[
+          { food:'고구마', amount:200 },
+          { food:'흰살생선', amount:180 },
+          { food:'두부', amount:150 },
+          { food:'아몬드', amount:25 },
+        ]},
+      ],
+      lean: [
+        { name:'점심 (첫 식사)', foods:[
+          { food:'현미밥', amount:250 },
+          { food:'닭가슴살', amount:200 },
+          { food:'계란전란', amount:2, isUnit:true },
+          { food:'올리브오일', amount:10 },
+        ]},
+        { name:'저녁 (두 번째 식사)', foods:[
+          { food:'고구마', amount:200 },
+          { food:'연어', amount:180 },
+          { food:'그릭요거트', amount:150 },
+          { food:'아몬드', amount:25 },
+        ]},
+      ],
+      bulk: [
+        { name:'점심 (첫 식사)', foods:[
+          { food:'흰쌀밥', amount:350 },
+          { food:'소고기', amount:200 },
+          { food:'계란전란', amount:3, isUnit:true },
+          { food:'땅콩버터', amount:20 },
+        ]},
+        { name:'저녁 (두 번째 식사)', foods:[
+          { food:'현미밥', amount:300 },
+          { food:'연어', amount:200 },
+          { food:'렌틸콩', amount:150 },
+          { food:'호두', amount:25 },
+        ]},
+      ],
+    }
+  };
+
+  let currentMealType = 'normal';
+  let currentMealTab = 0;
+  let currentMealGoal = 'lean';
+  let currentTargets = { carb:0, protein:0, fat:0 };
+
+  function calcFoodMacros(food, amount, isUnit) {
+    const d = foodDB[food];
+    if (!d) return { carb:0, protein:0, fat:0, cal:0 };
+    const base = isUnit ? (d.perUnit || 60) : 100;
+    const ratio = (isUnit ? amount * base : amount) / 100;
+    return {
+      carb:    Math.round(d.carb * ratio * 10) / 10,
+      protein: Math.round(d.protein * ratio * 10) / 10,
+      fat:     Math.round(d.fat * ratio * 10) / 10,
+      cal:     Math.round(d.cal * ratio),
+    };
+  }
+
+  function getMealTotals(meals) {
+    let t = { carb:0, protein:0, fat:0, cal:0 };
+    meals.forEach(meal => meal.foods.forEach(f => {
+      const m = calcFoodMacros(f.food, f.amount, f.isUnit);
+      t.carb += m.carb; t.protein += m.protein; t.fat += m.fat; t.cal += m.cal;
+    }));
+    return { carb:Math.round(t.carb), protein:Math.round(t.protein), fat:Math.round(t.fat), cal:Math.round(t.cal) };
+  }
+
+  function switchMealType(type) {
+    currentMealType = type; currentMealTab = 0;
+    document.getElementById('btnNormal').classList.toggle('active', type==='normal');
+    document.getElementById('btnIF').classList.toggle('active', type==='if');
+    renderMealPlan();
+  }
+
+  function switchMealTab(idx) { currentMealTab = idx; renderMealPlan(); }
+
+  function renderMealPlan() {
+    const template = mealTemplates[currentMealType][currentMealGoal];
+    if (!template) return;
+
+    document.getElementById('mealTabs').innerHTML = template.map((meal, i) =>
+      `<button class="meal-tab ${i===currentMealTab?'active':''}" onclick="switchMealTab(${i})">${meal.name}</button>`
+    ).join('');
+
+    const meal = template[currentMealTab];
+    let mC=0, mP=0, mF=0, mCal=0;
+    const rows = meal.foods.map(f => {
+      const m = calcFoodMacros(f.food, f.amount, f.isUnit);
+      mC+=m.carb; mP+=m.protein; mF+=m.fat; mCal+=m.cal;
+      return `<tr>
+        <td class="food-name-cell">${f.food}</td>
+        <td class="amount-cell">${f.isUnit ? f.amount+'개' : f.amount+'g'}</td>
+        <td style="color:var(--yellow);">${m.carb}g</td>
+        <td style="color:var(--blue);">${m.protein}g</td>
+        <td style="color:#f87171;">${m.fat}g</td>
+        <td style="color:#999;">${m.cal}kcal</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('mealContent').innerHTML = `
+      <table class="meal-table">
+        <thead><tr>
+          <th>식품</th><th>용량</th>
+          <th style="color:var(--yellow);">탄수화물</th>
+          <th style="color:var(--blue);">단백질</th>
+          <th style="color:#f87171;">지방</th>
+          <th>칼로리</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="meal-subtotal">
+        <div class="meal-subtotal-item">끼니 소계</div>
+        <div class="meal-subtotal-item"><span class="meal-subtotal-label">탄수화물</span><span class="meal-subtotal-val carb">${Math.round(mC)}g</span></div>
+        <div class="meal-subtotal-item"><span class="meal-subtotal-label">단백질</span><span class="meal-subtotal-val protein">${Math.round(mP)}g</span></div>
+        <div class="meal-subtotal-item"><span class="meal-subtotal-label">지방</span><span class="meal-subtotal-val fat">${Math.round(mF)}g</span></div>
+        <div class="meal-subtotal-item"><span class="meal-subtotal-label">칼로리</span><span class="meal-subtotal-val" style="color:#ccc;">${mCal}kcal</span></div>
+      </div>`;
+
+    const tot = getMealTotals(template);
+    const tgt = currentTargets;
+    const cP = Math.min(100, Math.round(tot.carb/(tgt.carb||1)*100));
+    const pP = Math.min(100, Math.round(tot.protein/(tgt.protein||1)*100));
+    const fP = Math.min(100, Math.round(tot.fat/(tgt.fat||1)*100));
+
+    document.getElementById('achievementWrap').innerHTML = `
+      <div class="achievement-title">하루 전체 달성률</div>
+      ${[
+        ['탄수화물','carb',tot.carb,tgt.carb,cP,'var(--yellow)'],
+        ['단백질','protein',tot.protein,tgt.protein,pP,'var(--blue)'],
+        ['지방','fat',tot.fat,tgt.fat,fP,'#f87171'],
+      ].map(([name,cls,got,target,pct,color]) => `
+        <div class="achievement-row">
+          <div class="achievement-label">
+            <span class="achievement-name" style="color:${color};">${name}</span>
+            <span class="achievement-nums">${got}g / ${target}g (${pct}%)</span>
+          </div>
+          <div class="achievement-bar-bg"><div class="achievement-bar ${cls}" style="width:${pct}%"></div></div>
+        </div>`).join('')}`;
+
+    const pShort = Math.max(0, tgt.protein - tot.protein);
+    const cShort = Math.max(0, tgt.carb - tot.carb);
+    let suppItems = '';
+    if (pShort > 0) {
+      const scoops = Math.ceil(pShort/25);
+      suppItems += `<div class="supplement-item">
+        <div class="supplement-left">🥛 단백질 보충제 (WPI) <strong style="color:var(--blue);">${scoops}스쿱</strong></div>
+        <div class="supplement-right">단백질 약 ${scoops*25}g 보충 가능</div>
+      </div>`;
+    }
+    if (cShort > 0) {
+      suppItems += `<div class="supplement-item">
+        <div class="supplement-left">🍚 현미밥 <strong style="color:var(--yellow);">약 ${Math.round(cShort/0.34)}g</strong> 또는 바나나 추가</div>
+        <div class="supplement-right">탄수화물 약 ${Math.round(cShort)}g 보충 가능</div>
+      </div>`;
+    }
+    if (!suppItems) {
+      suppItems = `<div class="supplement-item"><div class="supplement-left" style="color:#4ade80;">✅ 오늘 목표를 충분히 달성했습니다!</div></div>`;
+    }
+
+    document.getElementById('supplementNote').innerHTML = `
+      <div class="supplement-note-title">💊 부족분 보충 안내</div>
+      ${suppItems}
+      <p style="font-size:11px;color:#999;margin-top:10px;line-height:1.6;">보충제는 일반 식사로 채우기 어려운 경우에만 활용하세요. 식품을 통한 섭취를 우선으로 합니다.</p>`;
+  }
+
+  function initMealPlan(goal, carbG, proteinG, fatG) {
+    currentMealGoal = goal;
+    currentMealTab = 0;
+    currentMealType = 'normal';
+    currentTargets = { carb:carbG, protein:proteinG, fat:fatG };
+    document.getElementById('btnNormal').classList.add('active');
+    document.getElementById('btnIF').classList.remove('active');
+    renderMealPlan();
+  }
+
   function toggleMobileMenu() {
     document.getElementById('mobileMenu').classList.toggle('open');
   }
@@ -693,6 +1050,7 @@
       : desc[selectedGoal];
 
     renderFoods(selectedGoal);
+    initMealPlan(selectedGoal, carbG, proteinG, fatG);
     const r = document.getElementById('resultSection');
     r.classList.add('visible');
     setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
