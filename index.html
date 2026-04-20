@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>핏로그 | 나에게 맞는 식단 계산기</title>
+
+<!-- OG 메타태그 (카카오톡, SNS 공유 썸네일) -->
+<meta property="og:title" content="핏로그 | 나에게 맞는 탄단지 계산기">
+<meta property="og:description" content="목적별 맞춤 탄단지 계산기. 다이어트·린매스업·벌크업에 맞는 식단을 설계하세요.">
+<meta property="og:image" content="https://innera-kr.github.io/fitlog/og-image.png">
+<meta property="og:url" content="https://innera-kr.github.io/fitlog">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="핏로그 | 나에게 맞는 탄단지 계산기">
+<meta name="twitter:description" content="목적별 맞춤 탄단지 계산기. 다이어트·린매스업·벌크업에 맞는 식단을 설계하세요.">
+
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -18,8 +29,16 @@
   header { position: sticky; top: 0; z-index: 100; background: rgba(15,15,15,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
   .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 3px; color: var(--orange); text-shadow: 0 0 20px var(--orange-glow); }
   .logo span { color: var(--text); }
-  nav a { color: var(--text-dim); text-decoration: none; font-size: 13px; margin-left: 18px; transition: color 0.2s; }
+  nav { display: flex; align-items: center; gap: 0; }
+  nav a { color: var(--text-dim); text-decoration: none; font-size: 13px; margin-left: 18px; transition: color 0.2s; white-space: nowrap; }
   nav a:hover { color: var(--orange); }
+  .hamburger { display: none; background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); cursor: pointer; padding: 6px 10px; font-size: 16px; }
+  .mobile-menu { display: none; position: fixed; top: 60px; left: 0; right: 0; background: rgba(15,15,15,0.98); border-bottom: 1px solid var(--border); z-index: 99; padding: 16px 24px; flex-direction: column; gap: 4px; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { color: var(--text-dim); text-decoration: none; font-size: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:hover { color: var(--orange); }
+  @media (max-width: 680px) { nav { display: none; } .hamburger { display: block; } }
   .hero { position: relative; z-index: 1; text-align: center; padding: 60px 24px 40px; }
   .hero-badge { display: inline-block; background: var(--orange-dim); border: 1px solid var(--orange); color: var(--orange); font-size: 11px; font-weight: 700; letter-spacing: 2px; padding: 5px 14px; border-radius: 100px; margin-bottom: 20px; text-transform: uppercase; }
   .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 8vw, 72px); letter-spacing: 2px; line-height: 1; margin-bottom: 16px; }
@@ -183,7 +202,16 @@
     <a href="#" onclick="openModal('proteinModal');return false;">단백질 섭취 가이드</a>
     <a href="#" onclick="openModal('aboutModal');return false;">운영자 소개</a>
   </nav>
+  <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
 </header>
+
+<!-- 모바일 메뉴 -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" onclick="scrollToCalc();closeMobileMenu();return false;">계산기</a>
+  <a href="#" onclick="openModal('methodModal');closeMobileMenu();return false;">계산법 안내</a>
+  <a href="#" onclick="openModal('proteinModal');closeMobileMenu();return false;">단백질 섭취 가이드</a>
+  <a href="#" onclick="openModal('aboutModal');closeMobileMenu();return false;">운영자 소개</a>
+</div>
 
 <div class="hero">
   <div class="hero-badge">🔥 목적별 맞춤 탄단지 계산기</div>
@@ -203,7 +231,7 @@
       <div class="goal-grid">
         <div class="goal-btn" data-goal="diet" onclick="selectGoal(this)">
           <div class="goal-icon">🔥</div>
-          <div class="goal-name">체지방 감량</div>
+          <div class="goal-name">다이어트</div>
           <div class="goal-sub">지방을 줄이고<br>체중을 감량</div>
         </div>
         <div class="goal-btn" data-goal="lean" onclick="selectGoal(this)">
@@ -537,6 +565,13 @@
 
 <script>
   let selectedGoal = null, selectedJob = 'sedentary', selectedFreq = 3, selectedExp = 'experienced';
+
+  function toggleMobileMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+  function closeMobileMenu() {
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
 
   function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
