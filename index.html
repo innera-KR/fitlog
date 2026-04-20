@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>핏로그 | 나에게 맞는 식단 계산기</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f; --bg2: #161616; --bg3: #1e1e1e; --border: #2a2a2a;
+    --orange: #ff6b1a; --orange-dim: #ff6b1a22; --orange-glow: #ff6b1a44;
+    --text: #f0f0f0; --text-dim: #888; --text-muted: #555;
+    --green: #4ade80; --blue: #60a5fa; --yellow: #facc15;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-weight: 400; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 20% 0%, #ff6b1a08 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 100%, #ff6b1a05 0%, transparent 60%); pointer-events: none; z-index: 0; }
+  header { position: sticky; top: 0; z-index: 100; background: rgba(15,15,15,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 3px; color: var(--orange); text-shadow: 0 0 20px var(--orange-glow); }
+  .logo span { color: var(--text); }
+  nav a { color: var(--text-dim); text-decoration: none; font-size: 13px; margin-left: 18px; transition: color 0.2s; }
+  nav a:hover { color: var(--orange); }
+  .hero { position: relative; z-index: 1; text-align: center; padding: 60px 24px 40px; }
+  .hero-badge { display: inline-block; background: var(--orange-dim); border: 1px solid var(--orange); color: var(--orange); font-size: 11px; font-weight: 700; letter-spacing: 2px; padding: 5px 14px; border-radius: 100px; margin-bottom: 20px; text-transform: uppercase; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 8vw, 72px); letter-spacing: 2px; line-height: 1; margin-bottom: 16px; }
+  .hero h1 em { font-style: normal; color: var(--orange); text-shadow: 0 0 30px var(--orange-glow); }
+  .hero p { color: var(--text-dim); font-size: 15px; max-width: 480px; margin: 0 auto; line-height: 1.7; }
+  .ad-banner { margin: 0 auto 32px; max-width: 728px; height: 90px; background: var(--bg3); border: 1px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; letter-spacing: 1px; }
+  .main-wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+  @media (max-width: 860px) { .main-wrap { grid-template-columns: 1fr; } .sidebar { display: none; } }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 20px; }
+  .card-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+  .card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .goal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 500px) { .goal-grid { grid-template-columns: 1fr; } }
+  .goal-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 18px 12px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+  .goal-btn:hover { border-color: var(--orange); background: var(--orange-dim); }
+  .goal-btn.active { border-color: var(--orange); background: var(--orange-dim); box-shadow: 0 0 20px var(--orange-glow); }
+  .goal-btn.active::before { content: '✓'; position: absolute; top: 8px; right: 10px; font-size: 11px; color: var(--orange); font-weight: 700; }
+  .goal-icon { font-size: 28px; margin-bottom: 8px; }
+  .goal-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .goal-sub { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+  .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 500px) { .input-grid { grid-template-columns: 1fr; } }
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-group label { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text-dim); text-transform: uppercase; }
+  .input-group input, .input-group select { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; padding: 12px 14px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+  .input-group input:focus, .input-group select:focus { border-color: var(--orange); }
+  .input-group select option { background: var(--bg3); }
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  @media (max-width: 500px) { .check-grid { grid-template-columns: 1fr; } }
+  .check-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.2s; user-select: none; }
+  .check-item:hover { border-color: #444; }
+  .check-item.checked { border-color: var(--orange); background: var(--orange-dim); }
+  .check-box { width: 18px; height: 18px; border: 1.5px solid var(--text-muted); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; font-size: 11px; }
+  .check-item.checked .check-box { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .check-label { font-size: 13px; color: var(--text); }
+  .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .radio-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.2s; user-select: none; }
+  .radio-item:hover { border-color: #444; }
+  .radio-item.selected { border-color: var(--orange); background: var(--orange-dim); }
+  .radio-dot { width: 18px; height: 18px; border: 1.5px solid var(--text-muted); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .radio-item.selected .radio-dot { border-color: var(--orange); background: var(--orange); box-shadow: 0 0 8px var(--orange-glow); }
+  .radio-item.selected .radio-dot::after { content: ''; width: 6px; height: 6px; background: #fff; border-radius: 50%; }
+  .radio-label { font-size: 13px; color: var(--text); }
+  .radio-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .calc-btn { width: 100%; background: var(--orange); border: none; border-radius: 12px; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; padding: 18px; cursor: pointer; transition: all 0.2s; margin-top: 8px; position: relative; overflow: hidden; }
+  .calc-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, #ffffff22, transparent); }
+  .calc-btn:hover { background: #ff8040; box-shadow: 0 8px 30px var(--orange-glow); transform: translateY(-1px); }
+  .result-section { display: none; animation: fadeUp 0.5s ease; }
+  .result-section.visible { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .calorie-display { background: linear-gradient(135deg, var(--bg3), #1a1a1a); border: 1px solid var(--border); border-radius: 16px; padding: 32px; text-align: center; position: relative; overflow: hidden; margin-bottom: 16px; }
+  .calorie-display::before { content: ''; position: absolute; top: -40px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; background: radial-gradient(circle, var(--orange-glow), transparent 70%); pointer-events: none; }
+  .calorie-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px; }
+  .calorie-number { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--orange); text-shadow: 0 0 40px var(--orange-glow); line-height: 1; margin-bottom: 4px; }
+  .calorie-unit { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
+  .calorie-desc { font-size: 13px; color: var(--text-dim); background: var(--bg); border-radius: 8px; padding: 10px 16px; line-height: 1.6; }
+  .macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .macro-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 18px 14px; text-align: center; }
+  .macro-name { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .macro-name.carb { color: var(--yellow); } .macro-name.protein { color: var(--blue); } .macro-name.fat { color: #f87171; }
+  .macro-amount { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; margin-bottom: 2px; }
+  .macro-amount.carb { color: var(--yellow); } .macro-amount.protein { color: var(--blue); } .macro-amount.fat { color: #f87171; }
+  .macro-unit { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+  .macro-bar-bg { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+  .macro-bar { height: 100%; border-radius: 2px; transition: width 1s ease; }
+  .macro-bar.carb { background: var(--yellow); } .macro-bar.protein { background: var(--blue); } .macro-bar.fat { background: #f87171; }
+  .macro-equiv { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .sleep-note { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 0 10px 10px 0; padding: 14px 16px; margin-top: 12px; font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .ad-inline { height: 100px; background: var(--bg3); border: 1px dashed var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; letter-spacing: 1px; margin-bottom: 16px; }
+  .food-section { margin-top: 4px; }
+  .food-category { margin-bottom: 20px; }
+  .food-cat-title { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .food-cat-title.carb { color: var(--yellow); } .food-cat-title.protein { color: var(--blue); } .food-cat-title.fat { color: #f87171; }
+  .food-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .food-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 14px 12px; text-decoration: none; transition: all 0.2s; display: block; }
+  .food-item:hover { border-color: var(--orange); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .food-emoji { font-size: 22px; margin-bottom: 6px; }
+  .food-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .food-tip { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+  .food-buy { margin-top: 8px; font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--orange); text-transform: uppercase; }
+  .science-note { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--orange); border-radius: 0 10px 10px 0; padding: 14px 16px; margin-top: 16px; font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .science-note a { color: var(--orange); text-decoration: none; }
+  .science-note a:hover { text-decoration: underline; }
+  .sidebar { position: sticky; top: 80px; }
+  .ad-side { width: 100%; height: 600px; background: var(--bg2); border: 1px dashed var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; }
+  .info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-top: 16px; }
+  .info-card h3 { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 12px; }
+  .info-card p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .section-label { font-size: 13px; font-weight: 700; color: var(--text-dim); margin-bottom: 10px; margin-top: 20px; display: flex; align-items: center; gap: 6px; }
+  .tooltip-btn { background: none; border: 1px solid var(--border); border-radius: 50%; color: var(--text-muted); cursor: pointer; font-size: 10px; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+  .tooltip-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .freq-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .freq-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 8px 16px; cursor: pointer; transition: all 0.2s; }
+  .freq-btn:hover { border-color: #444; }
+  .freq-btn.selected { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); font-weight: 700; }
+  .exercise-section { transition: opacity 0.3s; }
+  .exercise-section.disabled { opacity: 0.35; pointer-events: none; }
+  .notice-box { border-radius: 0 10px 10px 0; padding: 12px 16px; font-size: 12px; line-height: 1.6; display: none; margin-top: 12px; }
+  .notice-box.visible { display: block; }
+  .notice-yellow { background: var(--bg3); border: 1px solid #fbbf2444; border-left: 3px solid var(--yellow); color: var(--yellow); }
+  footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 24px; text-align: center; color: var(--text-muted); font-size: 12px; line-height: 1.8; }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--orange); }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999; backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 24px; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; max-width: 680px; width: 100%; max-height: 85vh; overflow-y: auto; animation: fadeUp 0.3s ease; position: relative; }
+  .modal-header { position: sticky; top: 0; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; z-index: 1; }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--orange); }
+  .modal-close { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 18px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .modal-close:hover { border-color: var(--orange); color: var(--orange); }
+  .modal-body { padding: 28px; }
+  .modal-body h3 { font-size: 14px; font-weight: 700; color: var(--orange); margin: 24px 0 10px; letter-spacing: 1px; }
+  .modal-body h3:first-child { margin-top: 0; }
+  .modal-body p { font-size: 13px; color: var(--text-dim); line-height: 1.9; margin-bottom: 8px; }
+  .formula-box { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--orange); border-radius: 0 10px 10px 0; padding: 16px 18px; margin: 12px 0; font-size: 12px; color: var(--text); line-height: 2; font-family: monospace; }
+  .step-item { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+  .step-num { background: var(--orange); color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 16px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-content { flex: 1; }
+  .step-content strong { display: block; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .step-content span { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .ref-link { display: inline-flex; align-items: center; gap: 6px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--orange); font-size: 12px; text-decoration: none; transition: all 0.2s; margin-top: 8px; }
+  .ref-link:hover { border-color: var(--orange); }
+  .nav-link { display: inline-flex; align-items: center; gap: 6px; background: var(--orange-dim); border: 1px solid var(--orange); border-radius: 8px; padding: 10px 14px; color: var(--orange); font-size: 12px; cursor: pointer; transition: all 0.2s; margin-top: 8px; font-weight: 700; }
+  .nav-link:hover { background: var(--orange); color: #fff; }
+  .zone-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  .zone-table th { background: var(--bg3); color: var(--text-dim); font-weight: 700; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .zone-table td { padding: 10px 12px; border-bottom: 1px solid #1f1f1f; color: var(--text-dim); }
+  .zone-table tr:last-child td { border-bottom: none; }
+  .zone-badge { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; }
+  .z1 { background: #22c55e22; color: #4ade80; border: 1px solid #4ade8044; }
+  .z2 { background: #3b82f622; color: #60a5fa; border: 1px solid #60a5fa44; }
+  .z3 { background: #f59e0b22; color: #fbbf24; border: 1px solid #fbbf2444; }
+  .z4 { background: #f9731622; color: #fdba74; border: 1px solid #fb923c44; }
+  .z5 { background: #ef444422; color: #f87171; border: 1px solid #f8717144; }
+  .warning-box { background: #ef444410; border: 1px solid #f8717144; border-radius: 10px; padding: 16px 18px; margin: 10px 0; }
+  .warning-box p { font-size: 13px; color: #f87171; line-height: 1.8; margin: 0; }
+  .warning-box strong { color: #fca5a5; }
+  .compare-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  .compare-table th { background: var(--bg3); color: var(--text-dim); font-weight: 700; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 11px; }
+  .compare-table td { padding: 10px 12px; border-bottom: 1px solid #1f1f1f; color: var(--text-dim); }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table .hl { color: var(--orange); font-weight: 700; }
+  .profile-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 14px; padding: 24px; display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
+  .profile-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--orange-dim); border: 2px solid var(--orange); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+  .profile-info h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .profile-info p { font-size: 12px; color: var(--text-dim); line-height: 1.7; margin: 0; }
+  .timeline { margin: 16px 0; }
+  .timeline-item { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+  .timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--orange); margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 8px var(--orange-glow); }
+  .timeline-item p { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin: 0; }
+  .timeline-item strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">FIT<span>LOG</span></div>
+  <nav>
+    <a href="#" onclick="scrollToCalc();return false;">계산기</a>
+    <a href="#" onclick="openModal('methodModal');return false;">계산법 안내</a>
+    <a href="#" onclick="openModal('proteinModal');return false;">단백질 섭취 가이드</a>
+    <a href="#" onclick="openModal('aboutModal');return false;">운영자 소개</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">🔥 목적별 맞춤 탄단지 계산기</div>
+  <h1>내 몸에 맞는<br><em>식단을 설계하다</em></h1>
+  <p>단순 칼로리 계산을 넘어, 목적에 맞는 탄수화물·단백질·지방 비율과 추천 식품까지 한 번에.</p>
+</div>
+
+<div style="padding:0 24px;position:relative;z-index:1;max-width:760px;margin:0 auto 8px;">
+  <div class="ad-banner">[ 광고 영역 — Google AdSense ]</div>
+</div>
+
+<div class="main-wrap">
+  <div class="content">
+
+    <div class="card">
+      <div class="card-title">STEP 01 — 목표 선택</div>
+      <div class="goal-grid">
+        <div class="goal-btn" data-goal="diet" onclick="selectGoal(this)">
+          <div class="goal-icon">🔥</div>
+          <div class="goal-name">체지방 감량</div>
+          <div class="goal-sub">지방을 줄이고<br>체중을 감량</div>
+        </div>
+        <div class="goal-btn" data-goal="lean" onclick="selectGoal(this)">
+          <div class="goal-icon">⚡</div>
+          <div class="goal-name">근손실 없는<br>체지방 감량</div>
+          <div class="goal-sub">린매스업<br>근육 유지 + 감량</div>
+        </div>
+        <div class="goal-btn" data-goal="bulk" onclick="selectGoal(this)">
+          <div class="goal-icon">💪</div>
+          <div class="goal-name">근육량 증가</div>
+          <div class="goal-sub">벌크업<br>근육을 키운다</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">STEP 02 — 신체 정보</div>
+      <div class="input-grid">
+        <div class="input-group"><label>성별</label>
+          <select id="gender"><option value="male">남성</option><option value="female">여성</option></select>
+        </div>
+        <div class="input-group"><label>나이</label><input type="number" id="age" placeholder="예: 28" min="10" max="80"></div>
+        <div class="input-group"><label>키 (cm)</label><input type="number" id="height" placeholder="예: 175" min="100" max="250"></div>
+        <div class="input-group"><label>체중 (kg)</label><input type="number" id="weight" placeholder="예: 75" min="30" max="200"></div>
+      </div>
+      <div class="section-label" style="margin-top:20px;">직업 활동량</div>
+      <div class="radio-grid">
+        <div class="radio-item selected" data-job="sedentary" onclick="selectRadio(this,'job')">
+          <div class="radio-dot"></div>
+          <div><div class="radio-label">사무직 / 비활동</div><div class="radio-sub">주로 앉아서 일함</div></div>
+        </div>
+        <div class="radio-item" data-job="active" onclick="selectRadio(this,'job')">
+          <div class="radio-dot"></div>
+          <div><div class="radio-label">활동직 / 이동 많음</div><div class="radio-sub">서거나 이동이 많음</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">STEP 03 — 운동 정보</div>
+      <div class="section-label">주당 운동 빈도</div>
+      <div class="freq-btns">
+        <button class="freq-btn" data-freq="0" onclick="selectFreq(this)">안 함</button>
+        <button class="freq-btn" data-freq="1" onclick="selectFreq(this)">주 1회</button>
+        <button class="freq-btn" data-freq="2" onclick="selectFreq(this)">주 2~3회</button>
+        <button class="freq-btn selected" data-freq="3" onclick="selectFreq(this)">주 4~5회</button>
+        <button class="freq-btn" data-freq="4" onclick="selectFreq(this)">매일</button>
+      </div>
+      <div class="notice-box notice-yellow" id="noExerciseNotice">
+        ⚠️ 운동을 하지 않는 경우 단백질 권장량이 낮게 설정됩니다. 운동 없이 식단만으로 감량 시 근손실이 발생할 수 있습니다.
+      </div>
+      <div class="exercise-section" id="exerciseSection">
+        <div class="section-label">
+          운동 강도
+          <span style="color:var(--text-muted);font-size:11px;font-weight:400;">(중복 선택 가능, 최대 2개)</span>
+          <a href="#" onclick="openModal('zoneModal');return false;" style="color:var(--orange);font-size:11px;font-weight:700;text-decoration:none;margin-left:4px;">· Zone이란?</a>
+        </div>
+        <div class="check-grid">
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div><div class="check-label">가벼운 유산소</div><div style="font-size:11px;color:var(--text-dim);">Zone 2 이하 · 대화 가능한 강도</div></div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div><div class="check-label">고강도 유산소</div><div style="font-size:11px;color:var(--text-dim);">Zone 3 이상 · 숨이 차는 강도</div></div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <div><div class="check-label">웨이트 1시간 미만</div><div style="font-size:11px;color:var(--text-dim);">저~중강도 근력 운동</div></div>
+          </div>
+          <div class="check-item checked" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <div><div class="check-label">웨이트 1시간 이상</div><div style="font-size:11px;color:var(--text-dim);">고강도 근력 운동</div></div>
+          </div>
+        </div>
+        <div class="section-label">운동 경험</div>
+        <div class="radio-grid">
+          <div class="radio-item" data-exp="beginner" onclick="selectRadio(this,'exp')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">처음 시작 / 재개</div><div class="radio-sub">6개월 미만</div></div>
+          </div>
+          <div class="radio-item selected" data-exp="experienced" onclick="selectRadio(this,'exp')">
+            <div class="radio-dot"></div>
+            <div><div class="radio-label">꾸준히 운동 중</div><div class="radio-sub">6개월 이상</div></div>
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">지금 바로 계산하기 →</button>
+      <div class="science-note">
+        본 계산기는 <a href="#" onclick="openModal('methodModal');return false;">Harris-Benedict 방정식</a>을 기반으로, 운동 강도(Zone 시스템)·직업 활동량·운동 경험을 세분화한 자체 보정 계수와 <strong>체중 기반 단백질 계산</strong>을 적용합니다.
+        <a href="#" onclick="openModal('proteinModal');return false;" style="margin-left:4px;">단백질 섭취 가이드 →</a>
+      </div>
+    </div>
+
+    <div class="result-section" id="resultSection">
+      <div class="ad-inline">[ 광고 영역 — Google AdSense ]</div>
+      <div class="card">
+        <div class="card-title">RESULT — 나의 하루 목표</div>
+
+        <!-- 탄단지 메인 -->
+        <div class="macro-grid">
+          <div class="macro-card">
+            <div class="macro-name carb">탄수화물</div>
+            <div class="macro-amount carb" id="resultCarb">-</div>
+            <div class="macro-unit">g</div>
+            <div class="macro-bar-bg"><div class="macro-bar carb" id="carbBar" style="width:0%"></div></div>
+            <div class="macro-equiv" id="carbEquiv"></div>
+          </div>
+          <div class="macro-card">
+            <div class="macro-name protein">단백질</div>
+            <div class="macro-amount protein" id="resultProtein">-</div>
+            <div class="macro-unit">g</div>
+            <div class="macro-bar-bg"><div class="macro-bar protein" id="proteinBar" style="width:0%"></div></div>
+            <div class="macro-equiv" id="proteinEquiv"></div>
+          </div>
+          <div class="macro-card">
+            <div class="macro-name fat">지방</div>
+            <div class="macro-amount fat" id="resultFat">-</div>
+            <div class="macro-unit">g</div>
+            <div class="macro-bar-bg"><div class="macro-bar fat" id="fatBar" style="width:0%"></div></div>
+            <div class="macro-equiv" id="fatEquiv"></div>
+          </div>
+        </div>
+
+        <!-- 칼로리 참고값 (하단) -->
+        <div class="calorie-display" style="margin-top:16px;">
+          <div class="calorie-label">칼로리 합산 <span style="font-size:10px;color:var(--text-muted);font-weight:400;letter-spacing:0;">(참고값)</span></div>
+          <div class="calorie-number" id="resultCalorie" style="font-size:48px;">-</div>
+          <div class="calorie-unit">kcal / day</div>
+          <div class="calorie-desc" id="resultDesc"></div>
+          <div style="margin-top:10px;font-size:11px;color:var(--text-muted);line-height:1.7;">같은 탄수화물 200g이라도 현미밥과 설탕은 혈당 반응이 완전히 다릅니다.<br>칼로리보다 <strong style="color:var(--text-dim);">영양소 구성과 식품의 질</strong>이 더 중요합니다.</div>
+        </div>
+
+        <div class="sleep-note">
+          💤 <strong>수면도 중요한 변수입니다.</strong> 수면 7시간 미만은 코르티솔 분비를 높이고 렙틴·그렐린 호르몬 균형을 깨뜨려 체지방 감량 속도를 늦출 수 있습니다. 식단과 운동만큼 충분한 수면을 챙기세요.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">RECOMMEND — 추천 식품</div>
+        <div class="food-section" id="foodSection"></div>
+      </div>
+      <div class="ad-inline">[ 광고 영역 — Google AdSense ]</div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="ad-side">[ 사이드 광고 — AdSense ]</div>
+    <div class="info-card">
+      <h3>📌 계산기 활용 팁</h3>
+      <p>계산 결과는 참고값입니다. 실제 몸의 반응을 보면서 ±100~200kcal 범위 내에서 조절하세요. 2주 단위로 체중 변화를 확인하며 조정하는 것을 권장합니다.</p>
+    </div>
+    <div class="info-card" style="margin-top:0;">
+      <h3>🙋 운영자 소개</h3>
+      <p>128kg에서 시작해 58kg 감량, 벌크업, 린매스업을 직접 경험한 운영자가 만든 계산기입니다. 정보 불일치로 느낀 불편함을 해소하기 위해 제작했습니다.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>본 계산기의 결과는 참고용이며 의료적 조언을 대체하지 않습니다.</p>
+  <p style="margin-top:6px;">
+    <a href="#">개인정보처리방침</a> ·
+    <a href="#" onclick="openModal('methodModal');return false;">계산법 안내</a> ·
+    <a href="#" onclick="openModal('proteinModal');return false;">단백질 섭취 가이드</a> ·
+    <a href="#" onclick="openModal('aboutModal');return false;">운영자 소개</a>
+  </p>
+</footer>
+
+<!-- Zone 안내 모달 -->
+<div class="modal-overlay" id="zoneModal" onclick="closeModalOutside(event,'zoneModal')">
+  <div class="modal-box">
+    <div class="modal-header"><div class="modal-title">운동 강도 Zone 안내</div><button class="modal-close" onclick="closeModal('zoneModal')">✕</button></div>
+    <div class="modal-body">
+      <h3>🫀 심박수 Zone 시스템이란?</h3>
+      <p>같은 "걷기"라도 경사를 빠르게 오르면 심박수가 높아져 Zone이 달라집니다. 운동 강도는 종목이 아니라 <strong>내 심박수가 어디에 있는가</strong>로 판단하는 것이 정확합니다. 최대 심박수는 개인차가 있으며 일반적으로 <strong>220 − 나이</strong>로 추정합니다.</p>
+      <h3>📊 Zone별 기준 심박수</h3>
+      <table class="zone-table">
+        <thead><tr><th>Zone</th><th>최대심박수 %</th><th>강도</th><th>특징</th></tr></thead>
+        <tbody>
+          <tr><td><span class="zone-badge z1">Zone 1</span></td><td>50~60%</td><td>매우 가벼움</td><td>회복 운동, 스트레칭 수준</td></tr>
+          <tr><td><span class="zone-badge z2">Zone 2</span></td><td>60~70%</td><td>가벼움</td><td>대화 가능, 지방 연소 최적 구간</td></tr>
+          <tr><td><span class="zone-badge z3">Zone 3</span></td><td>70~80%</td><td>보통</td><td>약간 숨참, 유산소 능력 향상</td></tr>
+          <tr><td><span class="zone-badge z4">Zone 4</span></td><td>80~90%</td><td>고강도</td><td>대화 어려움, 젖산 역치 구간</td></tr>
+          <tr><td><span class="zone-badge z5">Zone 5</span></td><td>90~100%</td><td>최고강도</td><td>단시간만 유지 가능, 전력 질주</td></tr>
+        </tbody>
+      </table>
+      <h3>💡 나이별 최대심박수 및 Zone 2 범위 예시</h3>
+      <div class="formula-box">
+        20대: 최대 200bpm / Zone 2 = 120~140bpm<br>
+        30대: 최대 190bpm / Zone 2 = 114~133bpm<br>
+        40대: 최대 180bpm / Zone 2 = 108~126bpm<br>
+        50대: 최대 170bpm / Zone 2 = 102~119bpm
+      </div>
+      <h3>⚠️ 사람마다 심박 능력이 다릅니다</h3>
+      <p>같은 속도로 걷거나 뛰어도 누구는 Zone 2, 누구는 Zone 4가 나올 수 있습니다. 심폐 능력, 체력 수준, 스트레스, 수면 상태에 따라 달라집니다.</p>
+      <p>본 계산기에서 <strong>가벼운 유산소 = Zone 2 이하</strong>, <strong>고강도 유산소 = Zone 3 이상</strong>을 기준으로 하므로, 종목이 아닌 실제 내 심박 강도를 기준으로 선택하세요.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 계산법 안내 모달 -->
+<div class="modal-overlay" id="methodModal" onclick="closeModalOutside(event,'methodModal')">
+  <div class="modal-box">
+    <div class="modal-header"><div class="modal-title">계산법 안내</div><button class="modal-close" onclick="closeModal('methodModal')">✕</button></div>
+    <div class="modal-body">
+      <h3>📐 기반 공식 — Harris-Benedict 방정식</h3>
+      <p>본 계산기는 Harris-Benedict 방정식의 <strong>2010년 개정판(Mifflin-St Jeor)</strong>을 기반으로 합니다. 성별, 나이, 키, 체중으로 기초대사량(BMR)을 산출하며, 현재까지 가장 널리 검증된 에너지 추정 공식입니다.</p>
+      <div class="formula-box">
+        남성 BMR = 88.362 + (13.397 × 체중kg) + (4.799 × 키cm) − (5.677 × 나이)<br>
+        여성 BMR = 447.593 + (9.247 × 체중kg) + (3.098 × 키cm) − (4.330 × 나이)
+      </div>
+      <a class="ref-link" href="https://pubmed.ncbi.nlm.nih.gov/2305711/" target="_blank">📄 원문 논문 — National Library of Medicine</a>
+
+      <h3>⚙️ 자체 보정 계수 적용</h3>
+      <p>기존 계산기들은 활동량을 5단계로 단순 구분합니다. 같은 "주 3~5회"라도 30분 가벼운 유산소와 2시간 웨이트를 동일하게 취급하는 문제가 있습니다. 본 계산기는 이를 <strong>직업 활동량 + 운동 빈도 + 운동 강도(Zone 기반) + 운동 경험</strong>으로 세분화합니다.</p>
+      <div class="step-item"><div class="step-num">1</div><div class="step-content"><strong>직업 활동량 기본 계수</strong><span>사무직·비활동: 1.2 / 활동직·이동 많음: 1.3</span></div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-content"><strong>운동 빈도 가산</strong><span>주당 운동 빈도에 따라 0.0~0.4 범위로 추가 가산</span></div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-content"><strong>운동 강도 복합 적용 (Zone 기반)</strong><span>가벼운 유산소 Zone 2 이하(+0.05), 고강도 유산소 Zone 3 이상(+0.15), 웨이트 1h 미만(+0.10), 웨이트 1h 이상(+0.18) — 선택 조합 합산</span></div></div>
+      <div class="step-item"><div class="step-num">4</div><div class="step-content"><strong>운동 경험 보정</strong><span>6개월 이상 꾸준히 운동한 경우 강도 계수에 5% 추가 반영</span></div></div>
+
+      <h3>🎯 목표별 칼로리 설정</h3>
+      <div class="formula-box">
+        체지방 감량   : TDEE − 400kcal<br>
+        린매스업      : TDEE − 200kcal<br>
+        벌크업        : TDEE + 300kcal<br>
+        운동 안 함    : TDEE − 300kcal (식단 감량)
+      </div>
+
+      <h3>🥩 탄단지 계산 방식 — 체중 기반 전면 고정</h3>
+      <p>기존 방식처럼 칼로리 비율로 탄단지를 계산하면 체중과 무관하게 과도하거나 부족한 수치가 나올 수 있습니다. 본 계산기는 <strong>탄수화물·단백질·지방 모두 체중 기반 계수로 각각 독립 고정</strong>합니다.</p>
+      <div class="formula-box">
+        [단백질] 체중 기반 고정<br>
+        운동 안 함  → 체중 × 1.1g<br>
+        체지방 감량 → 체중 × 1.7g<br>
+        린매스업    → 체중 × 1.9g<br>
+        벌크업      → 체중 × 1.5g<br>
+        <br>
+        [탄수화물] 체중 기반 고정<br>
+        운동 안 함  → 체중 × 2.0g<br>
+        체지방 감량 → 체중 × 2.5g<br>
+        린매스업    → 체중 × 3.0g<br>
+        벌크업      → 체중 × 4.0g<br>
+        <br>
+        [지방] 체중 기반 고정<br>
+        체지방 감량·린매스업 → 체중 × 0.8g<br>
+        벌크업               → 체중 × 1.0g
+      </div>
+      <p>칼로리는 세 가지 영양소의 합산 참고값으로만 표시됩니다. 같은 탄수화물 양이라도 식품의 종류(GI 지수, 당류 함량)에 따라 혈당 반응과 실질 에너지 활용도가 달라지므로, 칼로리 총량보다 <strong>영양소 구성과 식품의 질</strong>을 우선적으로 고려하는 것을 권장합니다.</p>
+      <p>단백질 권장량에 대한 다양한 관점이 궁금하다면 아래 가이드를 확인하세요.</p>
+      <span class="nav-link" onclick="closeModal('methodModal');openModal('proteinModal');">→ 단백질 섭취 가이드 보기</span>
+      <p style="margin-top:20px;font-size:11px;color:var(--text-muted);">※ 계산 결과는 통계적 추정치이며 개인차가 있을 수 있습니다. 2주 단위로 체중 변화를 확인하며 ±100~200kcal 범위에서 조정하는 것을 권장합니다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 단백질 섭취 가이드 모달 -->
+<div class="modal-overlay" id="proteinModal" onclick="closeModalOutside(event,'proteinModal')">
+  <div class="modal-box">
+    <div class="modal-header"><div class="modal-title">단백질 섭취 가이드</div><button class="modal-close" onclick="closeModal('proteinModal')">✕</button></div>
+    <div class="modal-body">
+      <h3>1. 목적에 따라 권장량이 다른 이유</h3>
+      <p>단백질 권장량은 <strong>"누구를 위한 기준인가"</strong>에 따라 크게 달라집니다. 건강 유지가 목적인 일반인과, 근손실을 막으면서 체지방을 줄이려는 사람의 필요량은 완전히 다른 기준이 적용됩니다. 어느 쪽이 정답이 아니라, 내 목적에 맞는 기준을 선택하는 것이 중요합니다.</p>
+
+      <h3>2. 일반인 건강 유지 관점 — 조성숙 박사 기준</h3>
+      <p>태릉선수촌 36년 경력의 스포츠 영양학자 조성숙 박사는 단백질 파우더 없이도 일반 식사만으로 충분하다고 강조합니다. 권장 섭취량은 다음과 같습니다.</p>
+      <div class="formula-box">
+        일반인   : 체중 1kg당 0.8~1.1g<br>
+        운동선수 : 체중 1kg당 1.1~1.5g
+      </div>
+      <p>예를 들어 밥 두 공기에 제육볶음 반 접시만 먹어도 단백질 약 30g이 보충됩니다. 편의점 도시락 한 개에도 약 33g이 포함되어 있습니다. 일반적인 한 끼 식사만으로도 건강 유지에 필요한 단백질을 충분히 섭취할 수 있다는 관점입니다.</p>
+
+      <h3>3. 근손실 방지 관점 — 스포츠 영양학 기준</h3>
+      <p>칼로리 적자 상태(다이어트, 린매스업)에서는 에너지 부족 시 몸이 근육을 분해해 사용할 수 있습니다. 이를 방지하려면 단백질을 충분히 공급해 근육 분해를 억제해야 합니다.</p>
+      <div class="formula-box">
+        칼로리 적자(다이어트) : 체중 × 1.6~1.8g<br>
+        린매스업              : 체중 × 1.8~2.0g<br>
+        벌크업(칼로리 잉여)   : 체중 × 1.4~1.6g
+      </div>
+      <p>NASM(미국 스포츠 의학 아카데미)은 탄수화물이 부족하면 근비대가 감소한다고 강조합니다. 단백질만 높이고 탄수화물을 극단적으로 줄이는 방식은 오히려 근육 성장을 방해할 수 있습니다. <strong>적당한 단백질 + 충분한 탄수화물</strong>의 균형이 중요합니다.</p>
+
+      <h3>4. 과도한 단백질 섭취의 위험성</h3>
+      <div class="warning-box"><p>⚠️ <strong>신장(콩팥) 부담:</strong> 필요 이상의 단백질을 장기간 섭취하면 신장에 부담을 줄 수 있습니다. 특히 신장 기저질환이 있는 경우 반드시 전문의와 상담하세요.</p></div>
+      <div class="warning-box"><p>⚠️ <strong>대사성 산증 위험:</strong> 고단백 식단은 체내 산·염기 균형을 깨뜨려 대사성 산증을 유발할 수 있으며, 피로감·근력 저하·집중력 감소로 이어질 수 있습니다.</p></div>
+      <div class="warning-box"><p>⚠️ <strong>수분 섭취 필수:</strong> 단백질 대사 과정에서 수분 소모가 증가합니다. 단백질 섭취량이 높을수록 하루 최소 2~2.5L 이상의 물을 마셔야 합니다.</p></div>
+
+      <h3>5. 이 계산기가 적용한 기준</h3>
+      <p>본 계산기는 목적별 체중 기반 계수를 적용합니다. 칼로리 비율 방식은 과도하게 높아질 수 있어, 실제 운동·식단 경험을 바탕으로 현실적인 수치로 설정했습니다.</p>
+      <table class="compare-table">
+        <thead><tr><th>목적</th><th>기존 비율 방식</th><th>본 계산기 (체중 기반)</th></tr></thead>
+        <tbody>
+          <tr><td>체지방 감량</td><td>칼로리 35% → 과도</td><td class="hl">체중 × 1.6~1.8g</td></tr>
+          <tr><td>린매스업</td><td>칼로리 38% → 과도</td><td class="hl">체중 × 1.8~2.0g</td></tr>
+          <tr><td>벌크업</td><td>칼로리 28%</td><td class="hl">체중 × 1.4~1.6g</td></tr>
+          <tr><td>운동 안 함</td><td>미지원</td><td class="hl">체중 × 1.0~1.2g</td></tr>
+        </tbody>
+      </table>
+      <p>계산 결과는 참고값입니다. 2주 단위로 몸의 변화를 관찰하며 조금씩 조정하는 것을 권장합니다.</p>
+      <a class="ref-link" href="https://pubmed.ncbi.nlm.nih.gov/?term=protein+intake+muscle+preservation+diet" target="_blank">📄 관련 논문 검색 — PubMed (National Library of Medicine)</a>
+    </div>
+  </div>
+</div>
+
+<!-- 운영자 소개 모달 -->
+<div class="modal-overlay" id="aboutModal" onclick="closeModalOutside(event,'aboutModal')">
+  <div class="modal-box">
+    <div class="modal-header"><div class="modal-title">운영자 소개</div><button class="modal-close" onclick="closeModal('aboutModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="profile-card">
+        <div class="profile-avatar">🏋️</div>
+        <div class="profile-info">
+          <h4>핏로그 운영자</h4>
+          <p>128kg → 70kg · 총 58kg 감량<br>벌크업 · 린매스업 직접 경험<br>지금도 몸을 만들며 건강한 삶을 유지 중</p>
+        </div>
+      </div>
+      <h3>💬 이 사이트를 만든 이유</h3>
+      <p>저는 한때 체중 128kg까지 나갔을 정도로 초고도 비만으로 생활을 했었습니다. 여러 번의 시도와 실패를 반복한 끝에 총 58kg을 감량해 70kg까지 도달했었습니다. 그 과정은 단순히 숫자를 줄이는 것이 아닌 경험과 데이터를 쌓는 배움의 과정이었습니다.</p>
+      <p>다이어트를 하면서 유튜브, 커뮤니티, 트레이너마다 말이 달랐습니다. "단백질을 체중 × 2g 먹어라", "아니다 × 1.5g이면 된다", "탄수화물을 끊어라", "아니다 탄수화물이 있어야 근육이 자란다" — 정보가 많을수록 오히려 더 혼란스러웠습니다.</p>
+      <p>그래서 제가 직접 경험하고 검증한 방식으로, 목적에 맞게 <strong>일관성 있는 계산 결과와 식품 가이드</strong>를 제공하는 사이트를 만들었습니다.</p>
+      <h3>🗓️ 직접 경험한 과정</h3>
+      <div class="timeline">
+        <div class="timeline-item"><div class="timeline-dot"></div><p><strong>체지방 대량 감량 (128kg → 70kg, 총 58kg)</strong> — 고단백 식단과 유산소 운동을 병행하며 장기간 감량을 진행했습니다. 이 과정에서 식단 오류를 수없이 겪으며 무엇이 실제로 작동하는지 몸으로 배웠습니다.</p></div>
+        <div class="timeline-item"><div class="timeline-dot"></div><p><strong>벌크업</strong> — 감량 후 근육량 증가를 위한 클린 벌크업을 경험했습니다. 탄수화물 타이밍과 단백질 섭취량의 균형이 얼마나 중요한지 직접 확인했습니다.</p></div>
+        <div class="timeline-item"><div class="timeline-dot"></div><p><strong>린매스업 (현재 진행 중)</strong> — 근손실 없이 체지방을 줄이는 가장 까다로운 방식입니다. 칼로리 적자폭 조절과 단백질 비율 유지가 핵심임을 경험하고 있으며, 지금도 몸의 변화를 관찰하며 조정해가고 있습니다.</p></div>
+      </div>
+      <h3>📌 이 계산기의 철학</h3>
+      <p>숫자만 던져주는 계산기가 아니라, <strong>"그래서 뭘 먹어야 하는가"</strong>까지 안내하는 것이 목표입니다. 공식 기반의 신뢰성과 실제 경험에서 나온 실용성을 함께 담았습니다. 저도 지금도 성장하고 있는 과정에 있으며, 이 사이트도 함께 발전시켜 나갈 예정입니다.</p>
+      <p style="margin-top:12px;font-size:11px;color:var(--text-muted);">※ 본 계산기의 결과는 참고용이며 의료적 조언을 대체하지 않습니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedGoal = null, selectedJob = 'sedentary', selectedFreq = 3, selectedExp = 'experienced';
+
+  function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+  function closeModalOutside(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => { m.classList.remove('open'); document.body.style.overflow = ''; }); });
+  function scrollToCalc() { document.querySelector('.card').scrollIntoView({ behavior: 'smooth' }); }
+
+  function selectGoal(el) { document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); selectedGoal = el.dataset.goal; }
+
+  function selectRadio(el, group) {
+    el.closest('.card').querySelectorAll(`.radio-item[data-${group}]`).forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+    if (group === 'job') selectedJob = el.dataset.job;
+    if (group === 'exp') selectedExp = el.dataset.exp;
+  }
+
+  function selectFreq(el) {
+    document.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedFreq = parseInt(el.dataset.freq);
+    const noEx = selectedFreq === 0;
+    document.getElementById('exerciseSection').classList.toggle('disabled', noEx);
+    document.getElementById('noExerciseNotice').classList.toggle('visible', noEx);
+  }
+
+  function toggleCheck(el) {
+    if (!el.classList.contains('checked')) {
+      const count = document.querySelectorAll('.check-item.checked').length;
+      if (count >= 2) { const first = document.querySelector('.check-item.checked'); first.classList.remove('checked'); first.querySelector('.check-box').textContent = ''; }
+    }
+    el.classList.toggle('checked');
+    el.querySelector('.check-box').textContent = el.classList.contains('checked') ? '✓' : '';
+  }
+
+  function getCheckedIntensities() {
+    const items = document.querySelectorAll('.check-item'), checked = [];
+    items.forEach((item, i) => { if (item.classList.contains('checked')) checked.push(i); });
+    return checked;
+  }
+
+  function getActivityMultiplier() {
+    let base = selectedJob === 'active' ? 1.3 : 1.2;
+    const freqBonus = [0, 0.1, 0.2, 0.3, 0.4][selectedFreq] || 0;
+    let intensityBonus = 0;
+    if (selectedFreq > 0) {
+      getCheckedIntensities().forEach(i => {
+        if (i === 0) intensityBonus += 0.05;
+        if (i === 1) intensityBonus += 0.15;
+        if (i === 2) intensityBonus += 0.10;
+        if (i === 3) intensityBonus += 0.18;
+      });
+      if (selectedExp === 'experienced') intensityBonus *= 1.05;
+    }
+    return Math.min(base + freqBonus + intensityBonus, 2.2);
+  }
+
+  function calculate() {
+    const gender = document.getElementById('gender').value;
+    const age = parseFloat(document.getElementById('age').value);
+    const height = parseFloat(document.getElementById('height').value);
+    const weight = parseFloat(document.getElementById('weight').value);
+    if (!age || !height || !weight) { alert('신체 정보를 모두 입력해주세요.'); return; }
+    if (!selectedGoal) { alert('목표를 선택해주세요.'); return; }
+
+    let bmr = gender === 'male'
+      ? 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age)
+      : 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+
+    const tdee = bmr * getActivityMultiplier();
+
+    // 탄단지 전부 체중 기반 고정
+    const isNoEx = selectedFreq === 0;
+    const protCoeff = { diet: isNoEx ? 1.1 : 1.7, lean: isNoEx ? 1.1 : 1.9, bulk: isNoEx ? 1.1 : 1.5 };
+    const carbCoeff = { diet: isNoEx ? 2.0 : 2.5, lean: isNoEx ? 2.0 : 3.0, bulk: isNoEx ? 2.0 : 4.0 };
+    const fatCoeff  = { diet: 0.8, lean: 0.8, bulk: 1.0 };
+
+    const proteinG = Math.round(weight * protCoeff[selectedGoal]);
+    const carbG    = Math.round(weight * carbCoeff[selectedGoal]);
+    const fatG     = Math.round(weight * fatCoeff[selectedGoal]);
+
+    // 칼로리는 합산 참고값
+    const totalCal = proteinG * 4 + carbG * 4 + fatG * 9;
+    const calAdj = { diet: -400, lean: -200, bulk: 300 };
+    const tdeeCalorie = Math.round(tdee + (isNoEx ? -300 : calAdj[selectedGoal]));
+
+    document.getElementById('resultCalorie').textContent = totalCal.toLocaleString();
+    document.getElementById('resultCarb').textContent = carbG;
+    document.getElementById('resultProtein').textContent = proteinG;
+    document.getElementById('resultFat').textContent = fatG;
+    document.getElementById('carbEquiv').textContent = `현미밥 약 ${Math.round(carbG / 93)}공기 분량`;
+    document.getElementById('proteinEquiv').textContent = `닭가슴살 약 ${Math.round(proteinG / 0.23)}g 분량`;
+    document.getElementById('fatEquiv').textContent = `견과류 약 ${Math.round(fatG * 2)}g 분량`;
+    document.getElementById('carbBar').style.width = (carbG * 4 / totalCal * 100) + '%';
+    document.getElementById('proteinBar').style.width = (proteinG * 4 / totalCal * 100) + '%';
+    document.getElementById('fatBar').style.width = (fatG * 9 / totalCal * 100) + '%';
+
+    const desc = {
+      diet: '유지 칼로리보다 약 400kcal 낮게 설정된 적정 감량 수치입니다. 주당 약 0.3~0.5kg의 체지방 감량을 기대할 수 있습니다.',
+      lean: '근손실을 최소화하면서 체지방을 줄이는 린매스업 설정입니다. 단백질을 높게 유지하며 근육량을 보존합니다.',
+      bulk: '칼로리 잉여 상태에서 근육 성장을 극대화하는 벌크업 설정입니다. 탄수화물 질에 신경 써서 클린 벌크를 유지하세요.'
+    };
+    document.getElementById('resultDesc').textContent = selectedFreq === 0
+      ? '운동 없이 식단만으로 감량하는 설정입니다. 근손실 가능성이 있으므로 가벼운 걷기라도 병행하는 것을 권장합니다.'
+      : desc[selectedGoal];
+
+    renderFoods(selectedGoal);
+    const r = document.getElementById('resultSection');
+    r.classList.add('visible');
+    setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+
+  const foodData = {
+    diet: {
+      carb: [{ emoji:'🍠', name:'고구마', tip:'저GI · 혈당 완만하게 상승, 포만감 ↑', buy:true }, { emoji:'🌾', name:'현미밥', tip:'저GI · 식이섬유 풍부, 백미 대체', buy:false }, { emoji:'🌿', name:'오트밀', tip:'저GI · 베타글루칸으로 포만감 지속', buy:true }, { emoji:'🥦', name:'채소류', tip:'최저GI · 칼로리 낮고 부피 큼', buy:false }],
+      protein: [{ emoji:'🍗', name:'닭가슴살', tip:'100g당 단백질 23g, 지방 최소', buy:true }, { emoji:'🥚', name:'계란흰자', tip:'순수 단백질, 흡수율 최고', buy:false }, { emoji:'🫘', name:'두부', tip:'식물성 단백질, 이소플라본 함유', buy:true }, { emoji:'🐟', name:'흰살생선', tip:'저지방 고단백, 소화 흡수 빠름', buy:false }],
+      fat: [{ emoji:'🥑', name:'아보카도', tip:'불포화 지방산, 소량 섭취 권장', buy:false }, { emoji:'🫒', name:'올리브오일', tip:'올레산 함유, 요리에 소량', buy:true }, { emoji:'🥜', name:'아몬드', tip:'비타민E 풍부, 한 줌(25g) 이내', buy:true }]
+    },
+    lean: {
+      carb: [{ emoji:'🍠', name:'고구마', tip:'저GI · 린매스업 필수 탄수화물', buy:true }, { emoji:'🌾', name:'현미밥', tip:'저GI · 운동 전후 섭취 권장', buy:false }, { emoji:'🌿', name:'귀리', tip:'저GI · 지속적인 에너지 공급', buy:true }, { emoji:'🍌', name:'바나나', tip:'중GI · 운동 전 빠른 에너지 보충', buy:false }],
+      protein: [{ emoji:'🍗', name:'닭가슴살', tip:'린매스업의 핵심 단백질 공급원', buy:true }, { emoji:'🥩', name:'소고기 안심', tip:'크레아틴 + 단백질 동시 보충', buy:false }, { emoji:'🥚', name:'전란', tip:'완전 단백질, 필수 아미노산 풍부', buy:false }, { emoji:'🐟', name:'연어', tip:'오메가3 + 단백질, 염증 억제', buy:true }],
+      fat: [{ emoji:'🥚', name:'달걀노른자', tip:'지용성 비타민 흡수 도움', buy:false }, { emoji:'🫒', name:'올리브오일', tip:'항산화 작용, 근육 회복 도움', buy:true }, { emoji:'🥜', name:'땅콩버터', tip:'칼로리 밀도 높음, 소량 활용', buy:true }]
+    },
+    bulk: {
+      carb: [{ emoji:'🍚', name:'흰쌀밥', tip:'고GI · 운동 후 빠른 글리코겐 보충', buy:false }, { emoji:'🍌', name:'바나나', tip:'중GI · 소화 빠른 고칼로리', buy:false }, { emoji:'🍞', name:'통밀빵', tip:'중GI · 식이섬유 있는 복합 탄수화물', buy:true }, { emoji:'🌿', name:'귀리', tip:'저GI · 아침 식사로 최적', buy:true }],
+      protein: [{ emoji:'🥩', name:'소고기', tip:'크레아틴으로 근력 향상', buy:false }, { emoji:'🍗', name:'닭다리살', tip:'지방 포함 고칼로리 단백질', buy:false }, { emoji:'🐟', name:'연어', tip:'오메가3로 운동 후 염증 억제', buy:true }, { emoji:'🥚', name:'전란', tip:'가장 완전한 단백질 식품', buy:false }],
+      fat: [{ emoji:'🥜', name:'견과류', tip:'칼로리 밀도 높아 보충에 효율적', buy:true }, { emoji:'🥑', name:'아보카도', tip:'건강한 불포화 지방, 칼로리 추가', buy:false }, { emoji:'🫒', name:'올리브오일', tip:'요리에 활용, 칼로리 밀도 높음', buy:true }]
+    }
+  };
+
+  function renderFoods(goal) {
+    const data = foodData[goal], section = document.getElementById('foodSection');
+    const catNames = { carb:'탄수화물', protein:'단백질', fat:'지방' };
+    const catClass = { carb:'carb', protein:'protein', fat:'fat' };
+    section.innerHTML = Object.entries(data).map(([cat, foods]) => `
+      <div class="food-category">
+        <div class="food-cat-title ${catClass[cat]}">${catNames[cat]} 추천 식품</div>
+        <div class="food-list">
+          ${foods.map(f => `<a class="food-item" href="#" onclick="return false;"><div class="food-emoji">${f.emoji}</div><div class="food-name">${f.name}</div><div class="food-tip">${f.tip}</div>${f.buy ? '<div class="food-buy">추천 상품 보기 →</div>' : ''}</a>`).join('')}
+        </div>
+      </div>`).join('');
+  }
+</script>
+</body>
+</html>
