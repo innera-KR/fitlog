@@ -33,7 +33,7 @@
   body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-weight: 400; min-height: 100vh; overflow-x: hidden; }
   body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 20% 0%, #ff6b1a08 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 100%, #ff6b1a05 0%, transparent 60%); pointer-events: none; z-index: 0; }
   header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(15,15,15,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
-  body { padding-top: 60px; }
+  body { padding-top: 60px; overflow-x: hidden; }
   .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 3px; color: var(--orange); text-shadow: 0 0 20px var(--orange-glow); }
   .logo span { color: var(--text); }
   nav { display: flex; align-items: center; gap: 0; }
@@ -52,7 +52,7 @@
   .hero h1 em { font-style: normal; color: var(--orange); text-shadow: 0 0 30px var(--orange-glow); }
   .hero p { color: var(--text-dim); font-size: 15px; max-width: 480px; margin: 0 auto; line-height: 1.7; }
   .ad-banner { margin: 0 auto 32px; max-width: 728px; height: 90px; background: var(--bg3); border: 1px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; letter-spacing: 1px; }
-  .main-wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+  .main-wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; overflow-x: hidden; }
   @media (max-width: 860px) {
     .main-wrap { grid-template-columns: 1fr; }
     .sidebar { display: block; margin-top: 0; }
@@ -674,18 +674,6 @@
           <div class="faq-a">다이어트는 체중 감량 자체가 목표라 칼로리 적자폭이 큽니다. 린매스업은 근육은 최대한 유지하면서 체지방만 줄이는 방식으로 칼로리 적자폭이 작고 단백질 섭취량이 더 높습니다. 린매스업은 더 느리지만 몸의 질적 변화에 집중하는 방식입니다.</div>
         </div>
       </div>
-    </div>
-
-    <!-- 계산기 활용 팁 -->
-    <div class="info-card">
-      <h3>📌 계산기 활용 팁</h3>
-      <p>계산 결과는 참고값입니다. 실제 몸의 반응을 보면서 ±100~200kcal 범위 내에서 조절하세요. 2주 단위로 체중 변화를 확인하며 조정하는 것을 권장합니다.</p>
-    </div>
-
-    <!-- 운영자 소개 -->
-    <div class="info-card" style="margin-top:0;">
-      <h3>🙋 운영자 소개</h3>
-      <p>128kg에서 시작해 58kg 감량, 벌크업, 린매스업을 직접 경험한 운영자가 만든 계산기입니다. 정보 불일치로 느낀 불편함을 해소하기 위해 제작했습니다.</p>
     </div>
 
   </div>
