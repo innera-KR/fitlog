@@ -232,6 +232,18 @@
   .supplement-item:last-child { border-bottom: none; }
   .supplement-left { font-size: 13px; color: #cccccc; }
   .supplement-right { font-size: 12px; color: #999; text-align: right; }
+
+  /* 간헐적 단식 아코디언 */
+  .if-accordion { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+  .if-acc-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--orange); transition: background 0.2s; }
+  .if-acc-header:hover { background: var(--orange-dim); }
+  .if-acc-arrow { font-size: 11px; transition: transform 0.2s; }
+  .if-acc-arrow.open { transform: rotate(180deg); }
+  .if-acc-body { border-top: 1px solid var(--border); display: none; }
+  .if-acc-body.open { display: block; }
+  .if-acc-section { padding: 14px 18px; border-bottom: 1px solid #1f1f1f; }
+  .if-acc-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
+  .if-acc-text { font-size: 13px; color: #cccccc; line-height: 1.9; }
 </style>
 </head>
 <body>
@@ -426,6 +438,44 @@
           <button class="meal-toggle-btn" id="btnIF" onclick="switchMealType('if')">간헐적 단식 (16:8)</button>
         </div>
 
+        <!-- 간헐적 단식 아코디언 -->
+        <div class="if-accordion" id="ifAccordion" style="display:none;">
+          <div class="if-acc-header" onclick="toggleIfAccordion()">
+            <span>💡 간헐적 단식이란?</span>
+            <span class="if-acc-arrow" id="ifArrow">▼</span>
+          </div>
+          <div class="if-acc-body" id="ifAccBody">
+            <div class="if-acc-section">
+              <div class="if-acc-label">개념</div>
+              <div class="if-acc-text">16시간 공복 후 8시간 안에 모든 식사를 마치는 방식입니다. 먹는 양이 아닌 <strong>먹는 시간대</strong>를 조절하는 식이 전략입니다.</div>
+            </div>
+            <div class="if-acc-section">
+              <div class="if-acc-label">시간 예시</div>
+              <div class="if-acc-text">
+                저녁 <strong>18시</strong>에 마지막 식사 마침<br>
+                소화 시간 고려 → <strong>20시</strong>부터 공복 시작<br>
+                16시간 후 → 다음날 <strong>오후 12시</strong>에 첫 식사<br>
+                <strong>12시~20시</strong> 사이 8시간 안에 점심 + 저녁 섭취<br>
+                <span style="color:#999;font-size:11px;">요즘 바쁜 일상에서 아침을 거르는 패턴이 자연스러운 간헐적 단식이 될 수 있습니다.</span>
+              </div>
+            </div>
+            <div class="if-acc-section">
+              <div class="if-acc-label">기대 효과</div>
+              <div class="if-acc-text">인슐린 감수성 개선, 지방 연소 촉진, 소화기 휴식, 과식 방지 효과가 알려져 있습니다. 다만 개인차가 있으며 모든 사람에게 동일한 효과를 보장하지는 않습니다.</div>
+            </div>
+            <div class="if-acc-section" style="border-bottom:none;">
+              <div class="if-acc-label" style="color:#f87171;">주의사항</div>
+              <div class="if-acc-text" style="color:#cccccc;">다음에 해당하는 경우 간헐적 단식은 피하는 것이 좋습니다.<br>
+                • 성장기 청소년<br>
+                • 임산부 및 수유 중인 분<br>
+                • 저혈당 증세가 있는 분<br>
+                • 섭식 장애 경험이 있는 분<br>
+                • 특정 약물을 복용 중인 분 (의사와 상담 권장)
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- 안내 문구 -->
         <div style="background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:20px;font-size:12px;color:#cccccc;line-height:1.8;">
           아래 식단은 <strong style="color:var(--text);">구성 예시</strong>입니다. 다양한 식품을 보여주기 위해 여러 가지를 조합했지만, 실제로는 더 단순하게 구성해도 충분합니다.<br>
@@ -440,10 +490,11 @@
           부족할 경우 <strong style="color:var(--text);">견과류나 올리브오일</strong>로 소량 보충하세요.
         </div>
 
-        <!-- 끼니 탭 -->
+        <!-- 끼니 탭 (다중선택) -->
+        <div style="font-size:11px;color:#999;margin-bottom:8px;">먹은 끼니를 선택하면 달성률에 누적 반영됩니다.</div>
         <div class="meal-tabs" id="mealTabs"></div>
 
-        <!-- 식단 내용 -->
+        <!-- 선택된 끼니 식단 내용 -->
         <div id="mealContent"></div>
 
         <!-- 하루 달성률 -->
@@ -792,50 +843,55 @@
   };
 
   let currentMealType = 'normal';
-  let currentMealTab = 0;
+  let selectedMealTabs = new Set([0]);
   let currentMealGoal = 'lean';
   let currentTargets = { carb:0, protein:0, fat:0 };
 
-  function calcFoodMacros(food, amount, isUnit) {
-    const d = foodDB[food];
-    if (!d) return { carb:0, protein:0, fat:0, cal:0 };
-    const base = isUnit ? (d.perUnit || 60) : 100;
-    const ratio = (isUnit ? amount * base : amount) / 100;
-    return {
-      carb:    Math.round(d.carb * ratio * 10) / 10,
-      protein: Math.round(d.protein * ratio * 10) / 10,
-      fat:     Math.round(d.fat * ratio * 10) / 10,
-      cal:     Math.round(d.cal * ratio),
-    };
-  }
-
-  function getMealTotals(meals) {
-    let t = { carb:0, protein:0, fat:0, cal:0 };
-    meals.forEach(meal => meal.foods.forEach(f => {
-      const m = calcFoodMacros(f.food, f.amount, f.isUnit);
-      t.carb += m.carb; t.protein += m.protein; t.fat += m.fat; t.cal += m.cal;
-    }));
-    return { carb:Math.round(t.carb), protein:Math.round(t.protein), fat:Math.round(t.fat), cal:Math.round(t.cal) };
+  function toggleIfAccordion() {
+    const body = document.getElementById('ifAccBody');
+    const arrow = document.getElementById('ifArrow');
+    body.classList.toggle('open');
+    arrow.classList.toggle('open');
   }
 
   function switchMealType(type) {
-    currentMealType = type; currentMealTab = 0;
+    currentMealType = type;
+    selectedMealTabs = new Set([0]);
     document.getElementById('btnNormal').classList.toggle('active', type==='normal');
     document.getElementById('btnIF').classList.toggle('active', type==='if');
+    const accordion = document.getElementById('ifAccordion');
+    if (type === 'if') {
+      accordion.style.display = 'block';
+    } else {
+      accordion.style.display = 'none';
+      document.getElementById('ifAccBody').classList.remove('open');
+      document.getElementById('ifArrow').classList.remove('open');
+    }
     renderMealPlan();
   }
 
-  function switchMealTab(idx) { currentMealTab = idx; renderMealPlan(); }
+  function toggleMealTab(idx) {
+    if (selectedMealTabs.has(idx)) {
+      if (selectedMealTabs.size > 1) selectedMealTabs.delete(idx);
+    } else {
+      selectedMealTabs.add(idx);
+    }
+    renderMealPlan();
+  }
 
   function renderMealPlan() {
     const template = mealTemplates[currentMealType][currentMealGoal];
     if (!template) return;
 
-    document.getElementById('mealTabs').innerHTML = template.map((meal, i) =>
-      `<button class="meal-tab ${i===currentMealTab?'active':''}" onclick="switchMealTab(${i})">${meal.name}</button>`
-    ).join('');
+    // 탭 (다중선택 체크박스 방식)
+    document.getElementById('mealTabs').innerHTML = template.map((meal, i) => `
+      <button class="meal-tab ${selectedMealTabs.has(i) ? 'active' : ''}"
+        onclick="toggleMealTab(${i})">${meal.name} ${selectedMealTabs.has(i) ? '✓' : ''}</button>
+    `).join('');
 
-    const meal = template[currentMealTab];
+    // 선택된 탭 중 마지막 선택 탭의 식단 표시 (가장 최근 클릭)
+    const lastTab = Math.max(...selectedMealTabs);
+    const meal = template[lastTab];
     let mC=0, mP=0, mF=0, mCal=0;
     const rows = meal.foods.map(f => {
       const m = calcFoodMacros(f.food, f.amount, f.isUnit);
@@ -869,18 +925,29 @@
         <div class="meal-subtotal-item"><span class="meal-subtotal-label">칼로리</span><span class="meal-subtotal-val" style="color:#ccc;">${mCal}kcal</span></div>
       </div>`;
 
-    const tot = getMealTotals(template);
+    // 선택된 끼니들의 누적 달성률
+    let totC=0, totP=0, totF=0;
+    selectedMealTabs.forEach(i => {
+      template[i].foods.forEach(f => {
+        const m = calcFoodMacros(f.food, f.amount, f.isUnit);
+        totC+=m.carb; totP+=m.protein; totF+=m.fat;
+      });
+    });
+    totC=Math.round(totC); totP=Math.round(totP); totF=Math.round(totF);
+
     const tgt = currentTargets;
-    const cP = Math.min(100, Math.round(tot.carb/(tgt.carb||1)*100));
-    const pP = Math.min(100, Math.round(tot.protein/(tgt.protein||1)*100));
-    const fP = Math.min(100, Math.round(tot.fat/(tgt.fat||1)*100));
+    const cP = Math.min(100, Math.round(totC/(tgt.carb||1)*100));
+    const pP = Math.min(100, Math.round(totP/(tgt.protein||1)*100));
+    const fP = Math.min(100, Math.round(totF/(tgt.fat||1)*100));
+
+    const selectedNames = [...selectedMealTabs].map(i => template[i].name).join(' + ');
 
     document.getElementById('achievementWrap').innerHTML = `
-      <div class="achievement-title">하루 전체 달성률</div>
+      <div class="achievement-title">누적 달성률 <span style="font-size:11px;font-weight:400;color:#999;">(${selectedNames})</span></div>
       ${[
-        ['탄수화물','carb',tot.carb,tgt.carb,cP,'var(--yellow)'],
-        ['단백질','protein',tot.protein,tgt.protein,pP,'var(--blue)'],
-        ['지방','fat',tot.fat,tgt.fat,fP,'#f87171'],
+        ['탄수화물','carb',totC,tgt.carb,cP,'var(--yellow)'],
+        ['단백질','protein',totP,tgt.protein,pP,'var(--blue)'],
+        ['지방','fat',totF,tgt.fat,fP,'#f87171'],
       ].map(([name,cls,got,target,pct,color]) => `
         <div class="achievement-row">
           <div class="achievement-label">
@@ -890,8 +957,14 @@
           <div class="achievement-bar-bg"><div class="achievement-bar ${cls}" style="width:${pct}%"></div></div>
         </div>`).join('')}`;
 
-    const pShort = Math.max(0, tgt.protein - tot.protein);
-    const cShort = Math.max(0, tgt.carb - tot.carb);
+    // 하루 전체 부족분 (전체 끼니 합산 기준)
+    let allC=0, allP=0;
+    template.forEach(m => m.foods.forEach(f => {
+      const mc = calcFoodMacros(f.food, f.amount, f.isUnit);
+      allC+=mc.carb; allP+=mc.protein;
+    }));
+    const pShort = Math.max(0, tgt.protein - Math.round(allP));
+    const cShort = Math.max(0, tgt.carb - Math.round(allC));
     let suppItems = '';
     if (pShort > 0) {
       const scoops = Math.ceil(pShort/25);
@@ -909,21 +982,43 @@
     if (!suppItems) {
       suppItems = `<div class="supplement-item"><div class="supplement-left" style="color:#4ade80;">✅ 오늘 목표를 충분히 달성했습니다!</div></div>`;
     }
-
     document.getElementById('supplementNote').innerHTML = `
-      <div class="supplement-note-title">💊 부족분 보충 안내</div>
+      <div class="supplement-note-title">💊 하루 전체 부족분 보충 안내</div>
       ${suppItems}
       <p style="font-size:11px;color:#999;margin-top:10px;line-height:1.6;">보충제는 일반 식사로 채우기 어려운 경우에만 활용하세요. 식품을 통한 섭취를 우선으로 합니다.</p>`;
   }
 
   function initMealPlan(goal, carbG, proteinG, fatG) {
     currentMealGoal = goal;
-    currentMealTab = 0;
+    selectedMealTabs = new Set([0]);
     currentMealType = 'normal';
     currentTargets = { carb:carbG, protein:proteinG, fat:fatG };
     document.getElementById('btnNormal').classList.add('active');
     document.getElementById('btnIF').classList.remove('active');
+    document.getElementById('ifAccordion').style.display = 'none';
     renderMealPlan();
+  }
+
+  function calcFoodMacros(food, amount, isUnit) {
+    const d = foodDB[food];
+    if (!d) return { carb:0, protein:0, fat:0, cal:0 };
+    const base = isUnit ? (d.perUnit || 60) : 100;
+    const ratio = (isUnit ? amount * base : amount) / 100;
+    return {
+      carb:    Math.round(d.carb * ratio * 10) / 10,
+      protein: Math.round(d.protein * ratio * 10) / 10,
+      fat:     Math.round(d.fat * ratio * 10) / 10,
+      cal:     Math.round(d.cal * ratio),
+    };
+  }
+
+  function getMealTotals(meals) {
+    let t = { carb:0, protein:0, fat:0, cal:0 };
+    meals.forEach(meal => meal.foods.forEach(f => {
+      const m = calcFoodMacros(f.food, f.amount, f.isUnit);
+      t.carb += m.carb; t.protein += m.protein; t.fat += m.fat; t.cal += m.cal;
+    }));
+    return { carb:Math.round(t.carb), protein:Math.round(t.protein), fat:Math.round(t.fat), cal:Math.round(t.cal) };
   }
 
   function toggleMobileMenu() {
