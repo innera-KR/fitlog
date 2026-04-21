@@ -131,6 +131,13 @@
   .sidebar { position: sticky; top: 80px; }
   .ad-side { width: 100%; height: 600px; background: var(--bg2); border: 1px dashed var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; }
   .info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-top: 16px; }
+  .faq-list { margin-top: 8px; }
+  .faq-item { border-bottom: 1px solid var(--border); padding: 12px 0; cursor: pointer; }
+  .faq-q { font-size: 12px; font-weight: 700; color: #cccccc; line-height: 1.5; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .faq-arrow { font-size: 10px; color: var(--orange); flex-shrink: 0; transition: transform 0.2s; margin-top: 2px; }
+  .faq-arrow.open { transform: rotate(180deg); }
+  .faq-a { font-size: 12px; color: #999; line-height: 1.7; margin-top: 8px; display: none; }
+  .faq-a.open { display: block; }
   .info-card h3 { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 12px; }
   .info-card p { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
   .section-label { font-size: 13px; font-weight: 700; color: var(--text-dim); margin-bottom: 10px; margin-top: 20px; display: flex; align-items: center; gap: 6px; }
@@ -277,7 +284,13 @@
 </div>
 
 <div style="padding:0 24px;position:relative;z-index:1;max-width:760px;margin:0 auto 8px;">
-  <div class="ad-banner">[ 광고 영역 — Google AdSense ]</div>
+  <ins class="adsbygoogle"
+     style="display:block;max-width:728px;margin:0 auto;"
+     data-ad-client="ca-pub-6098844305438479"
+     data-ad-slot="6417437400"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
 <div class="main-wrap">
@@ -384,7 +397,15 @@
     </div>
 
     <div class="result-section" id="resultSection">
-      <div class="ad-inline">[ 광고 영역 — Google AdSense ]</div>
+      <div style="margin-bottom:16px;">
+        <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6098844305438479"
+           data-ad-slot="9155281387"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
       <div class="card">
         <div class="card-title">RESULT — 나의 하루 목표</div>
 
@@ -513,20 +534,80 @@
         </p>
       </div>
 
-      <div class="ad-inline">[ 광고 영역 — Google AdSense ]</div>
+      <div style="margin-bottom:16px;">
+        <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-6098844305438479"
+           data-ad-slot="2151935512"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
     </div>
   </div>
 
   <div class="sidebar">
-    <div class="ad-side">[ 사이드 광고 — AdSense ]</div>
+
+    <!-- BMI 카드 -->
+    <div class="info-card" id="bmiCard" style="display:none;">
+      <h3>📊 BMI 지수</h3>
+      <div style="text-align:center;margin:12px 0;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;" id="bmiValue">—</div>
+        <div style="font-size:13px;font-weight:700;margin-top:4px;" id="bmiLabel">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px 12px;margin-top:8px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#888;margin-bottom:6px;">
+          <span>저체중</span><span>정상</span><span>과체중</span><span>비만</span>
+        </div>
+        <div style="background:var(--border);border-radius:4px;height:8px;position:relative;overflow:hidden;">
+          <div id="bmiBar" style="height:100%;border-radius:4px;transition:width 0.8s ease;width:0%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#666;margin-top:4px;">
+          <span>18.5</span><span>25</span><span>30</span>
+        </div>
+      </div>
+      <p style="font-size:11px;color:#666;margin-top:10px;line-height:1.6;">BMI는 체성분을 반영하지 않아 근육량이 많은 경우 과체중으로 나올 수 있습니다.</p>
+    </div>
+
+    <!-- FAQ -->
+    <div class="info-card">
+      <h3>💬 자주 묻는 질문</h3>
+      <div class="faq-list">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">단백질을 꼭 체중 × 2g 먹어야 하나요? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">체중 × 2g은 고강도 운동을 하는 경우의 상한선에 가깝습니다. 일반적으로 운동을 병행한다면 체중 × 1.5~2g 범위면 충분합니다. 운동을 안 한다면 체중 × 1.1g 정도도 괜찮습니다. 과도한 단백질 섭취는 신장에 부담을 줄 수 있으니 적정 범위를 지키는 게 좋습니다.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">다이어트 중에 탄수화물을 적게 먹는 게 좋지 않나요? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">탄수화물을 극단적으로 줄이면 단기적으로 체중이 빠지지만 대부분 수분 손실입니다. 운동을 병행한다면 탄수화물은 근육의 연료이기 때문에 너무 줄이면 운동 수행 능력과 근육량이 감소합니다. 질 좋은 탄수화물(현미밥, 고구마 등)을 적정량 유지하는 게 지속 가능한 다이어트에 더 효과적입니다.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">계산 결과보다 덜 먹으면 더 빨리 빠지지 않나요? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">단기적으로는 그럴 수 있지만 장기적으로는 역효과가 납니다. 너무 적게 먹으면 기초대사량이 낮아지고 근손실이 발생해 나중에 더 살이 찌기 쉬운 체질이 됩니다. 주당 0.3~0.5kg 감량 속도가 근손실 없이 체지방만 줄이는 가장 효과적인 범위입니다.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">운동 안 해도 식단만으로 살을 뺄 수 있나요? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">가능하지만 권장하지 않습니다. 운동 없이 식단만으로 빼면 체중은 줄어도 체지방률이 높아지는 경우가 많습니다. 최소한 가벼운 걷기라도 병행하면 기초대사량 유지와 근손실 방지에 큰 도움이 됩니다.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)" style="border-bottom:none;">
+          <div class="faq-q">린매스업과 다이어트의 차이가 뭔가요? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">다이어트는 체중 감량 자체가 목표라 칼로리 적자폭이 큽니다. 린매스업은 근육은 최대한 유지하면서 체지방만 줄이는 방식으로 칼로리 적자폭이 작고 단백질 섭취량이 더 높습니다. 린매스업은 더 느리지만 몸의 질적 변화에 집중하는 방식입니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 계산기 활용 팁 -->
     <div class="info-card">
       <h3>📌 계산기 활용 팁</h3>
       <p>계산 결과는 참고값입니다. 실제 몸의 반응을 보면서 ±100~200kcal 범위 내에서 조절하세요. 2주 단위로 체중 변화를 확인하며 조정하는 것을 권장합니다.</p>
     </div>
+
+    <!-- 운영자 소개 -->
     <div class="info-card" style="margin-top:0;">
       <h3>🙋 운영자 소개</h3>
       <p>128kg에서 시작해 58kg 감량, 벌크업, 린매스업을 직접 경험한 운영자가 만든 계산기입니다. 정보 불일치로 느낀 불편함을 해소하기 위해 제작했습니다.</p>
     </div>
+
   </div>
 </div>
 
@@ -1149,9 +1230,42 @@
 
     renderFoods(selectedGoal);
     initMealPlan(selectedGoal, carbG, proteinG, fatG);
+    renderBMI(height, weight);
     const r = document.getElementById('resultSection');
     r.classList.add('visible');
     setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+
+  function renderBMI(height, weight) {
+    const bmi = Math.round((weight / ((height/100) * (height/100))) * 10) / 10;
+    let label = '', color = '', barW = 0;
+    if (bmi < 18.5) {
+      label = '저체중'; color = '#60a5fa';
+      barW = Math.round(bmi / 18.5 * 25);
+    } else if (bmi < 25) {
+      label = '정상 체중'; color = '#4ade80';
+      barW = Math.round(25 + (bmi - 18.5) / 6.5 * 35);
+    } else if (bmi < 30) {
+      label = '과체중'; color = '#facc15';
+      barW = Math.round(60 + (bmi - 25) / 5 * 25);
+    } else {
+      label = '비만'; color = '#f87171';
+      barW = Math.min(100, Math.round(85 + (bmi - 30) / 5 * 15));
+    }
+    document.getElementById('bmiValue').textContent = bmi;
+    document.getElementById('bmiValue').style.color = color;
+    document.getElementById('bmiLabel').textContent = label;
+    document.getElementById('bmiLabel').style.color = color;
+    document.getElementById('bmiBar').style.width = barW + '%';
+    document.getElementById('bmiBar').style.background = color;
+    document.getElementById('bmiCard').style.display = 'block';
+  }
+
+  function toggleFaq(el) {
+    const a = el.querySelector('.faq-a');
+    const arrow = el.querySelector('.faq-arrow');
+    a.classList.toggle('open');
+    arrow.classList.toggle('open');
   }
 
   const coupangLinks = {
