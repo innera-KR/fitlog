@@ -426,6 +426,7 @@
       <div class="card">
         <div class="card-title">RECOMMEND — 추천 식품</div>
         <div class="food-section" id="foodSection"></div>
+        <p style="margin-top:16px;font-size:11px;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);padding-top:12px;">※ 해당 추천 상품은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
       </div>
 
       <!-- 식단 예시 섹션 -->
@@ -708,7 +709,7 @@
     '흰쌀밥':     { carb:36, protein:2,  fat:0.3, cal:156 },
     '고구마':     { carb:30, protein:1,  fat:0.1, cal:128 },
     '오트밀':     { carb:67, protein:13, fat:7,   cal:389 },
-    '귀리밥':     { carb:33, protein:4,  fat:1,   cal:160 },
+    '귀리쉐이크': { carb:18, protein:5,  fat:2,   cal:110 },
     '바나나':     { carb:23, protein:1,  fat:0.2, cal:89  },
     '통밀빵':     { carb:42, protein:9,  fat:3,   cal:230 },
     '통밀파스타': { carb:37, protein:7,  fat:1,   cal:185 },
@@ -722,18 +723,17 @@
     '참치캔':     { carb:0,  protein:25, fat:1,   cal:110 },
     '계란전란':   { carb:1,  protein:13, fat:10,  cal:143, perUnit:60 },
     '계란흰자':   { carb:0,  protein:11, fat:0.2, cal:52,  perUnit:30 },
-    '두부':       { carb:2,  protein:10, fat:5,   cal:90  },
-    '그릭요거트': { carb:4,  protein:10, fat:0.4, cal:59  },
-    '코티지치즈': { carb:3,  protein:11, fat:4,   cal:90  },
-    '흰살생선':   { carb:0,  protein:18, fat:1,   cal:90  },
-    '올리브오일': { carb:0,  protein:0,  fat:100, cal:884 },
-    '아보카도':   { carb:9,  protein:2,  fat:15,  cal:160 },
-    '아몬드':     { carb:22, protein:21, fat:50,  cal:580 },
-    '호두':       { carb:14, protein:15, fat:65,  cal:650 },
-    '땅콩버터':   { carb:20, protein:25, fat:50,  cal:590 },
-    '달걀노른자': { carb:1,  protein:16, fat:27,  cal:320 },
-    '들기름':     { carb:0,  protein:0,  fat:100, cal:884 },
-    '치아씨드':   { carb:42, protein:17, fat:31,  cal:490 },
+    '난백':       { carb:0,  protein:11, fat:0.2, cal:52   },
+    '두부':       { carb:2,  protein:10, fat:5,   cal:90   },
+    '그릭요거트': { carb:4,  protein:10, fat:0.4, cal:59   },
+    '리코타치즈': { carb:3,  protein:9,  fat:8,   cal:130  },
+    '흰살생선':   { carb:0,  protein:18, fat:1,   cal:90   },
+    '올리브오일': { carb:0,  protein:0,  fat:100, cal:884  },
+    '아보카도':   { carb:9,  protein:2,  fat:15,  cal:160  },
+    '견과류':     { carb:18, protein:15, fat:55,  cal:620  },
+    '땅콩버터':   { carb:20, protein:25, fat:50,  cal:590  },
+    '기버터':     { carb:0,  protein:0.3,fat:99,  cal:876  },
+    '들기름':     { carb:0,  protein:0,  fat:100, cal:884  },
   };
 
   const mealTemplates = {
@@ -759,7 +759,7 @@
       ],
       lean: [
         { name:'아침', foods:[
-          { food:'귀리밥', amount:150 },
+          { food:'귀리쉐이크', amount:300 },
           { food:'계란전란', amount:2, isUnit:true },
           { food:'그릭요거트', amount:100 },
         ]},
@@ -1151,21 +1151,101 @@
     setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   }
 
+  const coupangLinks = {
+    '고구마':     'https://link.coupang.com/a/etsMTM',
+    '현미밥':     'https://link.coupang.com/a/etthrn',
+    '오트밀':     'https://link.coupang.com/a/ettyaP',
+    '귀리쉐이크': 'https://link.coupang.com/a/ettAZ3',
+    '바나나':     'https://link.coupang.com/a/ettDV1',
+    '통밀빵':     'https://link.coupang.com/a/ettE3v',
+    '흰쌀밥':     'https://link.coupang.com/a/ettfIG',
+    '단호박':     'https://link.coupang.com/a/ettLYv',
+    '통밀파스타': 'https://link.coupang.com/a/etuHWF',
+    '렌틸콩':     'https://link.coupang.com/a/etuJLa',
+    '채소류':     'https://link.coupang.com/a/ettSmN',
+    '닭가슴살':   'https://link.coupang.com/a/ett9VC',
+    '닭다리살':   'https://link.coupang.com/a/ett7TV',
+    '소고기':     'https://link.coupang.com/a/ets9ZO',
+    '돼지고기':   'https://link.coupang.com/a/ets12l',
+    '연어':       'https://link.coupang.com/a/etudUA',
+    '참치캔':     'https://link.coupang.com/a/etueMp',
+    '계란전란':   'https://link.coupang.com/a/etukZF',
+    '계란흰자':   'https://link.coupang.com/a/etukZF',
+    '두부':       'https://link.coupang.com/a/etunbW',
+    '난백':       'https://link.coupang.com/a/etuUAz',
+    '흰살생선':   'https://link.coupang.com/a/etsY0I',
+    '그릭요거트': 'https://link.coupang.com/a/etuscy',
+    '리코타치즈': 'https://link.coupang.com/a/etvQOQ',
+    '올리브오일': 'https://link.coupang.com/a/etvdfk',
+    '아보카도':   'https://link.coupang.com/a/etu0aT',
+    '기버터':     'https://link.coupang.com/a/etuWhc',
+    '견과류':     'https://link.coupang.com/a/etvw0L',
+    '들기름':     'https://link.coupang.com/a/etvArk',
+    '땅콩버터':   'https://link.coupang.com/a/etuoYo',
+    '단백질보충제':'https://link.coupang.com/a/etu53q',
+  };
+
   const foodData = {
     diet: {
-      carb: [{ emoji:'🍠', name:'고구마', tip:'저GI · 혈당 완만하게 상승, 포만감 ↑', buy:true }, { emoji:'🌾', name:'현미밥', tip:'저GI · 식이섬유 풍부, 백미 대체', buy:false }, { emoji:'🌿', name:'오트밀', tip:'저GI · 베타글루칸으로 포만감 지속', buy:true }, { emoji:'🥦', name:'채소류', tip:'최저GI · 칼로리 낮고 부피 큼', buy:false }],
-      protein: [{ emoji:'🍗', name:'닭가슴살', tip:'100g당 단백질 23g, 지방 최소', buy:true }, { emoji:'🥚', name:'계란흰자', tip:'순수 단백질, 흡수율 최고', buy:false }, { emoji:'⬜', name:'두부', tip:'식물성 단백질, 이소플라본 함유', buy:true }, { emoji:'🐟', name:'흰살생선', tip:'저지방 고단백, 소화 흡수 빠름', buy:false }],
-      fat: [{ emoji:'🥑', name:'아보카도', tip:'불포화 지방산, 소량 섭취 권장', buy:false }, { emoji:'🍶', name:'올리브오일', tip:'올레산 함유, 요리에 소량', buy:true }, { emoji:'🥜', name:'아몬드', tip:'비타민E 풍부, 한 줌(25g) 이내', buy:true }]
+      carb: [
+        { emoji:'🍠', name:'고구마',   tip:'저GI · 혈당 완만하게 상승, 포만감 ↑' },
+        { emoji:'🌾', name:'현미밥',   tip:'저GI · 식이섬유 풍부, 백미 대체' },
+        { emoji:'🌿', name:'오트밀',   tip:'저GI · 베타글루칸으로 포만감 지속' },
+        { emoji:'🥦', name:'채소류',   tip:'최저GI · 칼로리 낮고 부피 큼' },
+      ],
+      protein: [
+        { emoji:'🍗', name:'닭가슴살', tip:'100g당 단백질 23g, 지방 최소' },
+        { emoji:'🥚', name:'계란흰자', tip:'순수 단백질, 흡수율 최고' },
+        { emoji:'🤍', name:'난백',     tip:'액상 계란흰자, 대용량 섭취 편리' },
+        { emoji:'⬜', name:'두부',     tip:'식물성 단백질, 이소플라본 함유' },
+        { emoji:'🐟', name:'흰살생선', tip:'저지방 고단백, 소화 흡수 빠름' },
+      ],
+      fat: [
+        { emoji:'🥑', name:'아보카도',  tip:'불포화 지방산, 소량 섭취 권장' },
+        { emoji:'🍶', name:'올리브오일',tip:'올레산 함유, 요리에 소량' },
+        { emoji:'🥜', name:'견과류',    tip:'칼로리 밀도 높음, 한 줌 이내' },
+      ]
     },
     lean: {
-      carb: [{ emoji:'🍠', name:'고구마', tip:'저GI · 린매스업 필수 탄수화물', buy:true }, { emoji:'🌾', name:'현미밥', tip:'저GI · 운동 전후 섭취 권장', buy:false }, { emoji:'🌿', name:'귀리', tip:'저GI · 지속적인 에너지 공급', buy:true }, { emoji:'🍌', name:'바나나', tip:'중GI · 운동 전 빠른 에너지 보충', buy:false }],
-      protein: [{ emoji:'🍗', name:'닭가슴살', tip:'린매스업의 핵심 단백질 공급원', buy:true }, { emoji:'🥩', name:'소고기 안심', tip:'크레아틴 + 단백질 동시 보충', buy:false }, { emoji:'🥚', name:'전란', tip:'완전 단백질, 필수 아미노산 풍부', buy:false }, { emoji:'🐟', name:'연어', tip:'오메가3 + 단백질, 염증 억제', buy:true }],
-      fat: [{ emoji:'🥚', name:'달걀노른자', tip:'지용성 비타민 흡수 도움', buy:false }, { emoji:'🍶', name:'올리브오일', tip:'항산화 작용, 근육 회복 도움', buy:true }, { emoji:'🥜', name:'땅콩버터', tip:'칼로리 밀도 높음, 소량 활용', buy:true }]
+      carb: [
+        { emoji:'🍠', name:'고구마',     tip:'저GI · 린매스업 필수 탄수화물' },
+        { emoji:'🌾', name:'현미밥',     tip:'저GI · 운동 전후 섭취 권장' },
+        { emoji:'🥛', name:'귀리쉐이크', tip:'저GI · 탄수화물+단백질 동시 보충' },
+        { emoji:'🍌', name:'바나나',     tip:'중GI · 운동 전 빠른 에너지 보충' },
+      ],
+      protein: [
+        { emoji:'🍗', name:'닭가슴살',   tip:'린매스업의 핵심 단백질 공급원' },
+        { emoji:'🥩', name:'소고기',     tip:'크레아틴 + 단백질 동시 보충' },
+        { emoji:'🥚', name:'계란전란',   tip:'완전 단백질, 필수 아미노산 풍부' },
+        { emoji:'🤍', name:'난백',       tip:'저지방 고단백, 대용량 섭취 용이' },
+        { emoji:'🐟', name:'연어',       tip:'오메가3 + 단백질, 염증 억제' },
+      ],
+      fat: [
+        { emoji:'🍶', name:'올리브오일', tip:'항산화 작용, 근육 회복 도움' },
+        { emoji:'🧈', name:'기버터',     tip:'순수 유지방, 소량으로 칼로리 보충' },
+        { emoji:'🥜', name:'땅콩버터',   tip:'칼로리 밀도 높음, 소량 활용' },
+      ]
     },
     bulk: {
-      carb: [{ emoji:'🍚', name:'흰쌀밥', tip:'고GI · 운동 후 빠른 글리코겐 보충', buy:false }, { emoji:'🍌', name:'바나나', tip:'중GI · 소화 빠른 고칼로리', buy:false }, { emoji:'🍞', name:'통밀빵', tip:'중GI · 식이섬유 있는 복합 탄수화물', buy:true }, { emoji:'🌿', name:'귀리', tip:'저GI · 아침 식사로 최적', buy:true }],
-      protein: [{ emoji:'🥩', name:'소고기', tip:'크레아틴으로 근력 향상', buy:false }, { emoji:'🍗', name:'닭다리살', tip:'지방 포함 고칼로리 단백질', buy:false }, { emoji:'🐟', name:'연어', tip:'오메가3로 운동 후 염증 억제', buy:true }, { emoji:'🥚', name:'전란', tip:'가장 완전한 단백질 식품', buy:false }],
-      fat: [{ emoji:'🥜', name:'견과류', tip:'칼로리 밀도 높아 보충에 효율적', buy:true }, { emoji:'🥑', name:'아보카도', tip:'건강한 불포화 지방, 칼로리 추가', buy:false }, { emoji:'🍶', name:'올리브오일', tip:'요리에 활용, 칼로리 밀도 높음', buy:true }]
+      carb: [
+        { emoji:'🍚', name:'흰쌀밥',     tip:'고GI · 운동 후 빠른 글리코겐 보충' },
+        { emoji:'🍌', name:'바나나',     tip:'중GI · 소화 빠른 고칼로리' },
+        { emoji:'🍞', name:'통밀빵',     tip:'중GI · 식이섬유 있는 복합 탄수화물' },
+        { emoji:'🥛', name:'귀리쉐이크', tip:'저GI · 아침 식사로 최적, 단백질 함유' },
+      ],
+      protein: [
+        { emoji:'🥩', name:'소고기',     tip:'크레아틴으로 근력 향상' },
+        { emoji:'🍗', name:'닭다리살',   tip:'지방 포함 고칼로리 단백질' },
+        { emoji:'🐟', name:'연어',       tip:'오메가3로 운동 후 염증 억제' },
+        { emoji:'🥚', name:'계란전란',   tip:'가장 완전한 단백질 식품' },
+        { emoji:'🧀', name:'리코타치즈', tip:'고단백 유제품, 칼슘 풍부' },
+      ],
+      fat: [
+        { emoji:'🥜', name:'견과류',     tip:'칼로리 밀도 높아 벌크업에 효율적' },
+        { emoji:'🥑', name:'아보카도',   tip:'건강한 불포화 지방, 칼로리 추가' },
+        { emoji:'🧈', name:'기버터',     tip:'순수 유지방, 요리에 소량 활용' },
+        { emoji:'🥜', name:'땅콩버터',   tip:'칼로리 밀도 높음, 벌크업 보조' },
+      ]
     }
   };
 
@@ -1177,7 +1257,15 @@
       <div class="food-category">
         <div class="food-cat-title ${catClass[cat]}">${catNames[cat]} 추천 식품</div>
         <div class="food-list">
-          ${foods.map(f => `<a class="food-item" href="#" onclick="return false;"><div class="food-emoji">${f.emoji}</div><div class="food-name">${f.name}</div><div class="food-tip">${f.tip}</div>${f.buy ? '<div class="food-buy">추천 상품 보기 →</div>' : ''}</a>`).join('')}
+          ${foods.map(f => {
+            const link = coupangLinks[f.name];
+            return `<a class="food-item" ${link ? `href="${link}" target="_blank" rel="noopener"` : 'href="#" onclick="return false;"'}>
+              <div class="food-emoji">${f.emoji}</div>
+              <div class="food-name">${f.name}</div>
+              <div class="food-tip">${f.tip}</div>
+              ${link ? '<div class="food-buy">추천 상품 보기 →</div>' : ''}
+            </a>`;
+          }).join('')}
         </div>
       </div>`).join('');
   }
