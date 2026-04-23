@@ -289,6 +289,51 @@
     .profile-info p { font-size: 12px; }
     .goal-sub { font-size: 10px; }
   }
+  /* 식단 구성 트래커 */
+  .tracker-wrap { }
+  .tracker-meal-tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+  .tracker-meal-tab { background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); font-size: 13px; font-weight: 700; padding: 8px 16px; cursor: pointer; transition: all 0.2s; }
+  .tracker-meal-tab.active { background: var(--bg3); border-color: var(--orange); color: var(--orange); }
+  .tracker-meal-summary { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+  .tracker-meal-badge { font-size: 11px; color: #888; background: var(--bg3); border-radius: 4px; padding: 2px 8px; }
+  .tracker-meal-badge.has-food { color: var(--orange); border: 1px solid var(--orange-dim); }
+  .tracker-cat-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .tracker-cat-tab { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; color: var(--text-dim); font-size: 12px; font-weight: 700; padding: 6px 14px; cursor: pointer; transition: all 0.2s; }
+  .tracker-cat-tab.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); }
+  .tracker-food-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; min-height: 36px; }
+  .tracker-food-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim); font-size: 12px; padding: 6px 12px; cursor: pointer; transition: all 0.2s; }
+  .tracker-food-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .tracker-food-btn.selected { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); font-weight: 700; }
+  .tracker-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 12px; flex-wrap: wrap; }
+  .tracker-select { flex: 1; min-width: 140px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 10px 12px; outline: none; }
+  .tracker-input { width: 90px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 10px 12px; outline: none; }
+  .tracker-add-btn { background: var(--orange); border: none; border-radius: 8px; color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 1px; padding: 10px 18px; cursor: pointer; white-space: nowrap; }
+  .tracker-list { margin-bottom: 16px; }
+  .tracker-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--bg3); border-radius: 8px; margin-bottom: 6px; font-size: 12px; }
+  .tracker-item-name { font-weight: 700; color: var(--text); min-width: 80px; }
+  .tracker-item-macros { color: #999; flex: 1; margin: 0 8px; }
+  .tracker-item-del { background: none; border: 1px solid #444; border-radius: 6px; color: #666; cursor: pointer; font-size: 11px; padding: 3px 8px; }
+  .tracker-item-del:hover { border-color: #f87171; color: #f87171; }
+  .tracker-goals { margin-top: 8px; }
+  .tracker-goal-row { margin-bottom: 10px; }
+  .tracker-goal-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+  .tracker-goal-name { font-weight: 700; }
+  .tracker-goal-num { color: #999; }
+  .tracker-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .tracker-bar { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+  .tracker-summary { margin-top: 20px; background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: none; }
+  .tracker-summary-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--orange); text-transform: uppercase; margin-bottom: 14px; }
+  .tracker-summary-meal { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .tracker-summary-meal:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .tracker-summary-meal-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .tracker-summary-food-list { font-size: 12px; color: #999; line-height: 1.8; }
+  .tracker-summary-total { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; }
+  .tracker-summary-total-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .tracker-summary-total-label { font-size: 10px; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+  .tracker-summary-total-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; line-height: 1; }
+  .tracker-reset-btn { background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); font-size: 12px; padding: 8px 16px; cursor: pointer; margin-top: 12px; }
+  .tracker-reset-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .tracker-empty { text-align: center; color: #555; font-size: 12px; padding: 20px 0; }
   .mobile-only-cards { display: none; }
   @media (max-width: 860px) {
     .mobile-only-cards { display: block; }
@@ -615,6 +660,77 @@
         </p>
       </div>
 
+      <!-- 직접 식단 구성해보기 -->
+      <div class="card" id="trackerSection">
+        <div class="card-title">MY DIET — 직접 식단 구성해보기</div>
+        <p style="font-size:12px;color:#999;margin-bottom:16px;line-height:1.7;">식품과 용량을 입력하면 탄단지 목표 달성률을 실시간으로 확인할 수 있습니다. 영양성분은 식품의약품안전처 기준 100g당 수치로 계산됩니다.</p>
+        <div class="tracker-wrap">
+          <!-- 끼니 탭 -->
+          <div class="tracker-meal-tabs">
+            <button class="tracker-meal-tab active" onclick="trackerSelectMeal(this,'아침')">🌅 아침</button>
+            <button class="tracker-meal-tab" onclick="trackerSelectMeal(this,'점심')">☀️ 점심</button>
+            <button class="tracker-meal-tab" onclick="trackerSelectMeal(this,'저녁')">🌙 저녁</button>
+            <button class="tracker-meal-tab" onclick="trackerSelectMeal(this,'간식')">🍎 간식</button>
+          </div>
+          <!-- 카테고리 탭 -->
+          <div class="tracker-cat-tabs">
+            <button class="tracker-cat-tab active" onclick="trackerSelectCat(this,'carb')">🍚 탄수화물</button>
+            <button class="tracker-cat-tab" onclick="trackerSelectCat(this,'veg')">🥦 채소</button>
+            <button class="tracker-cat-tab" onclick="trackerSelectCat(this,'protein')">🍗 단백질</button>
+            <button class="tracker-cat-tab" onclick="trackerSelectCat(this,'fat')">🥑 지방</button>
+          </div>
+          <!-- 식품 버튼 그리드 -->
+          <div class="tracker-food-grid" id="trackerFoodGrid"></div>
+          <!-- 선택된 식품 + 용량 입력 -->
+          <div class="tracker-row">
+            <div style="flex:1;background:var(--bg3);border:1px solid var(--orange);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--orange);font-weight:700;" id="trackerSelectedFood">식품을 선택해주세요</div>
+            <input type="number" class="tracker-input" id="trackerAmount" placeholder="용량 (g)" min="1" max="2000">
+            <button class="tracker-add-btn" onclick="trackerAdd()">+ 추가</button>
+          </div>
+          <div id="trackerHint" style="display:none;font-size:12px;color:#aaa;margin:-6px 0 10px;line-height:1.6;"></div>
+          <!-- 현재 끼니 목록 -->
+          <div class="tracker-list" id="trackerList">
+            <div class="tracker-empty" id="trackerEmpty">식품을 추가하면 달성률이 표시됩니다.</div>
+          </div>
+
+          <!-- 하루 전체 합계 -->
+          <div id="trackerGoals" style="display:none;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;padding-top:12px;border-top:1px solid var(--border);">하루 전체 합계</div>
+            <div class="tracker-goal-row">
+              <div class="tracker-goal-label">
+                <span class="tracker-goal-name" style="color:#facc15;">탄수화물</span>
+                <span class="tracker-goal-num" id="trackerCarbNum">0g / 0g</span>
+              </div>
+              <div class="tracker-bar-bg"><div class="tracker-bar" id="trackerCarbBar" style="width:0%;background:#facc15;"></div></div>
+            </div>
+            <div class="tracker-goal-row">
+              <div class="tracker-goal-label">
+                <span class="tracker-goal-name" style="color:#60a5fa;">단백질</span>
+                <span class="tracker-goal-num" id="trackerProteinNum">0g / 0g</span>
+              </div>
+              <div class="tracker-bar-bg"><div class="tracker-bar" id="trackerProteinBar" style="width:0%;background:#60a5fa;"></div></div>
+            </div>
+            <div class="tracker-goal-row">
+              <div class="tracker-goal-label">
+                <span class="tracker-goal-name" style="color:#f87171;">지방</span>
+                <span class="tracker-goal-num" id="trackerFatNum">0g / 0g</span>
+              </div>
+              <div class="tracker-bar-bg"><div class="tracker-bar" id="trackerFatBar" style="width:0%;background:#f87171;"></div></div>
+            </div>
+            <div style="text-align:center;margin-top:12px;">
+              <button class="tracker-reset-btn" onclick="trackerReset()">전체 초기화</button>
+            </div>
+          </div>
+
+          <!-- 직접 구성한 식단 요약 -->
+          <div class="tracker-summary" id="trackerSummary">
+            <div class="tracker-summary-title">📋 직접 구성한 식단 요약</div>
+            <div id="trackerSummaryMeals"></div>
+            <div class="tracker-summary-total" id="trackerSummaryTotal"></div>
+          </div>
+        </div>
+      </div>
+
       <div style="margin-bottom:16px;">
         <ins class="adsbygoogle"
            style="display:block"
@@ -908,8 +1024,7 @@
     '돼지고기':   { carb:0,  protein:19, fat:12,  cal:190 },
     '연어':       { carb:0,  protein:20, fat:13,  cal:200 },
     '참치캔':     { carb:0,  protein:25, fat:1,   cal:110 },
-    '계란전란':   { carb:1,  protein:13, fat:10,  cal:143, perUnit:60 },
-    '계란흰자':   { carb:0,  protein:11, fat:0.2, cal:52,  perUnit:30 },
+    '계란전란':   { carb:1,  protein:13, fat:10,  cal:143, perUnit:50 },
     '난백':       { carb:0,  protein:11, fat:0.2, cal:52   },
     '두부':       { carb:2,  protein:10, fat:5,   cal:90   },
     '그릭요거트': { carb:4,  protein:10, fat:0.4, cal:59   },
@@ -921,6 +1036,31 @@
     '땅콩버터':   { carb:20, protein:25, fat:50,  cal:590  },
     '기버터':     { carb:0,  protein:0.3,fat:99,  cal:876  },
     '들기름':     { carb:0,  protein:0,  fat:100, cal:884  },
+    // 추가 식품 (식단 구성 트래커용)
+    '감자':         { carb:17.0, protein:2.0,  fat:0.1,  cal:77  },
+    '곤약밥':       { carb:3.0,  protein:0.1,  fat:0.0,  cal:13  },
+    '잡곡밥':       { carb:36.0, protein:3.2,  fat:0.5,  cal:160 },
+    '보리밥':       { carb:36.5, protein:3.0,  fat:0.5,  cal:158 },
+    '귀리밥':       { carb:24.0, protein:3.5,  fat:1.2,  cal:120 },
+    '흑미밥':       { carb:37.0, protein:3.3,  fat:0.6,  cal:163 },
+    '식빵':         { carb:49.0, protein:8.0,  fat:4.0,  cal:264 },
+    '미숫가루':     { carb:75.0, protein:11.0, fat:4.0,  cal:376 },
+    '브로콜리':     { carb:5.0,  protein:3.6,  fat:0.4,  cal:34  },
+    '오이':         { carb:2.9,  protein:0.7,  fat:0.1,  cal:14  },
+    '양배추':       { carb:5.2,  protein:1.3,  fat:0.1,  cal:25  },
+    '토마토':       { carb:4.0,  protein:0.9,  fat:0.2,  cal:19  },
+    '파프리카':     { carb:5.3,  protein:0.9,  fat:0.2,  cal:26  },
+    '시금치':       { carb:3.6,  protein:2.9,  fat:0.4,  cal:23  },
+    '닭안심':       { carb:0.0,  protein:23.0, fat:1.2,  cal:105 },
+    '고등어':       { carb:0.0,  protein:18.0, fat:13.0, cal:183 },
+    '새우':         { carb:0.0,  protein:20.0, fat:1.1,  cal:93  },
+    '삶은계란':     { carb:1.1,  protein:12.5, fat:10.6, cal:155, perUnit:50 },
+    '일반우유':     { carb:4.8,  protein:3.2,  fat:3.5,  cal:63  },
+    '저지방우유':   { carb:5.1,  protein:3.4,  fat:1.5,  cal:46  },
+    '두유':         { carb:3.5,  protein:3.5,  fat:2.0,  cal:46  },
+    '슬라이스치즈': { carb:2.0,  protein:6.0,  fat:14.0, cal:158 },
+    '모짜렐라치즈': { carb:2.2,  protein:22.0, fat:17.5, cal:254 },
+    '코티지치즈':   { carb:3.4,  protein:11.0, fat:4.3,  cal:98  },
   };
 
   const mealTemplates = {
@@ -1334,6 +1474,9 @@
     renderFoods(selectedGoal);
     initMealPlan(selectedGoal, carbG, proteinG, fatG);
     renderBMI(height, weight);
+    trackerGoals = { carb: carbG, protein: proteinG, fat: fatG };
+    trackerItems = { '아침': [], '점심': [], '저녁': [], '간식': [] };
+    trackerRender();
     const r = document.getElementById('resultSection');
     r.classList.add('visible');
     setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
@@ -1372,6 +1515,212 @@
     document.getElementById('bmiBarMobile').style.background = color;
     document.getElementById('bmiCardMobile').style.display = 'block';
     document.getElementById('mobileTipCard').style.display = 'block';
+  }
+
+  // 식단 트래커
+  let trackerItems = { '아침': [], '점심': [], '저녁': [], '간식': [] };
+  let trackerCurrentMeal = '아침';
+  let trackerGoals = { carb: 0, protein: 0, fat: 0 };
+
+  // 초기 탄수화물 카테고리 로드
+  window.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('trackerFoodGrid');
+    if (grid) {
+      grid.innerHTML = trackerFoods['carb'].map(f =>
+        `<button class="tracker-food-btn" onclick="trackerSelectFood(this,'${f}')">${f}</button>`
+      ).join('');
+    }
+  });
+
+  const trackerFoods = {
+    carb:    ['현미밥','흰쌀밥','고구마','오트밀','귀리쉐이크','바나나','통밀빵','통밀파스타','단호박','렌틸콩','감자','곤약밥','잡곡밥','보리밥','귀리밥','흑미밥','식빵','미숫가루'],
+    veg:     ['브로콜리','오이','양배추','토마토','파프리카','시금치'],
+    protein: ['닭가슴살','닭안심','닭다리살','소고기','돼지고기','연어','고등어','새우','참치캔','흰살생선','계란전란','삶은계란','난백','두부','그릭요거트','리코타치즈','일반우유','저지방우유','두유'],
+    fat:     ['올리브오일','아보카도','견과류','땅콩버터','기버터','들기름','슬라이스치즈','모짜렐라치즈','코티지치즈'],
+  };
+  let trackerCurrentFood = '';
+  let trackerCurrentCat = 'carb';
+
+  function trackerSelectCat(btn, cat) {
+    document.querySelectorAll('.tracker-cat-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    trackerCurrentCat = cat;
+    trackerCurrentFood = '';
+    document.getElementById('trackerSelectedFood').textContent = '식품을 선택해주세요';
+    document.getElementById('trackerSelectedFood').style.color = 'var(--orange)';
+    const grid = document.getElementById('trackerFoodGrid');
+    grid.innerHTML = trackerFoods[cat].map(f =>
+      `<button class="tracker-food-btn${trackerCurrentFood===f?' selected':''}" onclick="trackerSelectFood(this,'${f}')">${f}</button>`
+    ).join('');
+  }
+
+  const trackerFoodHints = {
+    '계란전란':  '대란 기준 1개 ≈ 50g (마트에서 파는 일반 계란)',
+    '삶은계란':  '대란 기준 1개 ≈ 50g (마트에서 파는 일반 계란)',
+    '바나나':    '1개 ≈ 100g (마트에서 파는 일반 바나나, 껍질 제외 과육 기준)',
+    '단호박':    '1/4개 ≈ 200g',
+    '아보카도':  '1개 ≈ 150g (씨·껍질 제외)',
+    '두유':      '1팩 ≈ 190g',
+    '일반우유':  '1컵 ≈ 200g',
+    '저지방우유':'1컵 ≈ 200g',
+    '올리브오일':'1큰술 ≈ 14g',
+    '들기름':    '1큰술 ≈ 14g',
+    '기버터':    '1큰술 ≈ 14g',
+    '땅콩버터':  '1큰술 ≈ 16g',
+    '미숫가루':  '1스쿱 ≈ 30g',
+  };
+
+  function trackerSelectFood(btn, food) {
+    document.querySelectorAll('.tracker-food-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    trackerCurrentFood = food;
+    document.getElementById('trackerSelectedFood').textContent = food + ' 선택됨';
+    document.getElementById('trackerSelectedFood').style.color = 'var(--orange)';
+    document.getElementById('trackerAmount').placeholder = '용량 (g)';
+    const hint = trackerFoodHints[food];
+    const hintEl = document.getElementById('trackerHint');
+    if (hint) {
+      hintEl.textContent = '💡 ' + hint;
+      hintEl.style.display = 'block';
+    } else {
+      hintEl.style.display = 'none';
+    }
+    document.getElementById('trackerAmount').focus();
+  }
+
+  function trackerSelectMeal(btn, meal) {
+    document.querySelectorAll('.tracker-meal-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    trackerCurrentMeal = meal;
+    trackerRender();
+  }
+
+  function trackerAdd() {
+    const food = trackerCurrentFood;
+    const amount = parseFloat(document.getElementById('trackerAmount').value);
+    if (!food || !amount || amount <= 0) {
+      alert('식품과 용량을 입력해주세요.');
+      return;
+    }
+    const db = foodDB[food];
+    if (!db) return;
+    const ratio = amount / 100;
+    const item = {
+      food,
+      amount,
+      carb: Math.round(db.carb * ratio * 10) / 10,
+      protein: Math.round(db.protein * ratio * 10) / 10,
+      fat: Math.round(db.fat * ratio * 10) / 10,
+      cal: Math.round(db.cal * ratio),
+    };
+    trackerItems[trackerCurrentMeal].push(item);
+    document.getElementById('trackerAmount').value = '';
+    trackerRender();
+  }
+
+  function trackerDelete(meal, idx) {
+    trackerItems[meal].splice(idx, 1);
+    trackerRender();
+  }
+
+  function trackerReset() {
+    trackerItems = { '아침': [], '점심': [], '저녁': [], '간식': [] };
+    trackerRender();
+  }
+
+  function trackerRender() {
+    const list = document.getElementById('trackerList');
+    const goalsEl = document.getElementById('trackerGoals');
+    const meals = ['아침','점심','저녁','간식'];
+    const currentItems = trackerItems[trackerCurrentMeal];
+    const mealEmoji = { '아침':'🌅','점심':'☀️','저녁':'🌙','간식':'🍎' };
+
+    // 현재 끼니 목록
+    if (currentItems.length === 0) {
+      list.innerHTML = `<div class="tracker-empty">${mealEmoji[trackerCurrentMeal]} ${trackerCurrentMeal} 식품을 추가해보세요.</div>`;
+    } else {
+      list.innerHTML = currentItems.map((item, i) => `
+        <div class="tracker-item">
+          <span class="tracker-item-name">${item.food}</span>
+          <span class="tracker-item-macros">${item.amount}g · 탄 ${item.carb}g · 단 ${item.protein}g · 지 ${item.fat}g · ${item.cal}kcal</span>
+          <button class="tracker-item-del" onclick="trackerDelete('${trackerCurrentMeal}',${i})">삭제</button>
+        </div>
+      `).join('');
+    }
+
+    // 하루 전체 합계
+    let total = { carb: 0, protein: 0, fat: 0 };
+    let hasAny = false;
+    meals.forEach(m => {
+      trackerItems[m].forEach(item => {
+        total.carb += item.carb;
+        total.protein += item.protein;
+        total.fat += item.fat;
+        hasAny = true;
+      });
+    });
+
+    if (!hasAny) {
+      goalsEl.style.display = 'none';
+      return;
+    }
+    goalsEl.style.display = 'block';
+
+    const g = trackerGoals;
+    const carbPct = g.carb > 0 ? Math.min(100, Math.round(total.carb / g.carb * 100)) : 0;
+    const proteinPct = g.protein > 0 ? Math.min(100, Math.round(total.protein / g.protein * 100)) : 0;
+    const fatPct = g.fat > 0 ? Math.min(100, Math.round(total.fat / g.fat * 100)) : 0;
+
+    document.getElementById('trackerCarbNum').textContent = `${Math.round(total.carb)}g / ${g.carb}g (${carbPct}%)`;
+    document.getElementById('trackerProteinNum').textContent = `${Math.round(total.protein)}g / ${g.protein}g (${proteinPct}%)`;
+    document.getElementById('trackerFatNum').textContent = `${Math.round(total.fat)}g / ${g.fat}g (${fatPct}%)`;
+    document.getElementById('trackerCarbBar').style.width = carbPct + '%';
+    document.getElementById('trackerProteinBar').style.width = proteinPct + '%';
+    document.getElementById('trackerFatBar').style.width = fatPct + '%';
+
+    // 식단 요약표
+    const summaryEl = document.getElementById('trackerSummary');
+    const summaryMeals = document.getElementById('trackerSummaryMeals');
+    const summaryTotal = document.getElementById('trackerSummaryTotal');
+    const mealEmoji2 = { '아침':'🌅','점심':'☀️','저녁':'🌙','간식':'🍎' };
+    const activeMeals = meals.filter(m => trackerItems[m].length > 0);
+
+    if (activeMeals.length === 0) {
+      summaryEl.style.display = 'none';
+    } else {
+      summaryEl.style.display = 'block';
+      summaryMeals.innerHTML = activeMeals.map(m => {
+        const foods = trackerItems[m].map(item => `${item.food} ${item.amount}g`).join(' · ');
+        const mC = trackerItems[m].reduce((a,i)=>a+i.carb,0);
+        const mP = trackerItems[m].reduce((a,i)=>a+i.protein,0);
+        const mF = trackerItems[m].reduce((a,i)=>a+i.fat,0);
+        const mCal = trackerItems[m].reduce((a,i)=>a+i.cal,0);
+        return `<div class="tracker-summary-meal">
+          <div class="tracker-summary-meal-name">${mealEmoji2[m]} ${m}</div>
+          <div class="tracker-summary-food-list">${foods}</div>
+          <div style="font-size:11px;color:#666;margin-top:4px;">탄 ${Math.round(mC)}g · 단 ${Math.round(mP)}g · 지 ${Math.round(mF)}g · ${mCal}kcal</div>
+        </div>`;
+      }).join('');
+
+      const totalCal = meals.reduce((a,m)=>a+trackerItems[m].reduce((b,i)=>b+i.cal,0),0);
+      summaryTotal.innerHTML = `
+        <div class="tracker-summary-total-item">
+          <span class="tracker-summary-total-label">탄수화물</span>
+          <span class="tracker-summary-total-val" style="color:#facc15;">${Math.round(total.carb)}g</span>
+        </div>
+        <div class="tracker-summary-total-item">
+          <span class="tracker-summary-total-label">단백질</span>
+          <span class="tracker-summary-total-val" style="color:#60a5fa;">${Math.round(total.protein)}g</span>
+        </div>
+        <div class="tracker-summary-total-item">
+          <span class="tracker-summary-total-label">지방</span>
+          <span class="tracker-summary-total-val" style="color:#f87171;">${Math.round(total.fat)}g</span>
+        </div>
+        <div class="tracker-summary-total-item">
+          <span class="tracker-summary-total-label">칼로리</span>
+          <span class="tracker-summary-total-val" style="color:#ccc;">${totalCal}kcal</span>
+        </div>`;
+    }
   }
 
   function openMobileFaq() {
@@ -1430,7 +1779,7 @@
       ],
       protein: [
         { emoji:'🍗', name:'닭가슴살', tip:'100g당 단백질 23g, 지방 최소' },
-        { emoji:'🥚', name:'계란흰자', tip:'순수 단백질, 흡수율 최고' },
+        { emoji:'🥚', name: tip:'순수 단백질, 흡수율 최고' },
         { emoji:'🤍', name:'난백',     tip:'액상 계란흰자, 대용량 섭취 편리' },
         { emoji:'⬜', name:'두부',     tip:'식물성 단백질, 이소플라본 함유' },
         { emoji:'🐟', name:'흰살생선', tip:'저지방 고단백, 소화 흡수 빠름' },
