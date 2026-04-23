@@ -109,6 +109,7 @@
   .calc-btn:hover { background: #ff8040; box-shadow: 0 8px 30px var(--orange-glow); transform: translateY(-1px); }
   .result-section { display: none; animation: fadeUp 0.5s ease; }
   .result-section.visible { display: block; }
+  .result-section .card { overflow-x: hidden; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .calorie-display { background: linear-gradient(135deg, var(--bg3), #1a1a1a); border: 1px solid var(--border); border-radius: 16px; padding: 32px; text-align: center; position: relative; overflow: hidden; margin-bottom: 16px; }
   .calorie-display::before { content: ''; position: absolute; top: -40px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; background: radial-gradient(circle, var(--orange-glow), transparent 70%); pointer-events: none; }
@@ -226,9 +227,10 @@
   .meal-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
   .meal-tab { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: #bbbbbb; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 8px 18px; cursor: pointer; transition: all 0.2s; }
   .meal-tab.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); font-weight: 700; }
-  .meal-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-  .meal-table th { background: var(--bg3); color: #bbbbbb; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
-  .meal-table td { padding: 10px 12px; border-bottom: 1px solid #1f1f1f; font-size: 13px; color: #cccccc; }
+  .meal-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; table-layout: fixed; }
+  .meal-table th { background: var(--bg3); color: #bbbbbb; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+  .meal-table td { padding: 8px; border-bottom: 1px solid #1f1f1f; font-size: 12px; color: #cccccc; word-break: keep-all; }
+  @media (max-width: 500px) { .meal-table th, .meal-table td { font-size: 11px; padding: 6px 6px; } }
   .meal-table tr:last-child td { border-bottom: none; }
   .meal-table .food-name-cell { font-weight: 700; color: var(--text); }
   .meal-table .amount-cell { color: #999; }
@@ -269,6 +271,24 @@
   .if-acc-section { padding: 14px 18px; border-bottom: 1px solid #1f1f1f; }
   .if-acc-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
   .if-acc-text { font-size: 13px; color: #cccccc; line-height: 1.9; }
+  /* 모바일 폰트 원래 크기로 복구 */
+  @media (max-width: 860px) {
+    .radio-sub { font-size: 11px; }
+    .macro-unit { font-size: 11px; }
+    .macro-equiv { font-size: 11px; }
+    .food-tip { font-size: 11px; }
+    .food-buy { font-size: 10px; }
+    .faq-q { font-size: 12px; }
+    .faq-a { font-size: 12px; }
+    .info-card p { font-size: 12px; }
+    .step-content span { font-size: 12px; }
+    .ref-link { font-size: 12px; }
+    .nav-link { font-size: 12px; }
+    .zone-table { font-size: 12px; }
+    .compare-table { font-size: 12px; }
+    .profile-info p { font-size: 12px; }
+    .goal-sub { font-size: 10px; }
+  }
   .mobile-only-cards { display: none; }
   @media (max-width: 860px) {
     .mobile-only-cards { display: block; }
